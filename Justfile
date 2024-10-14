@@ -50,7 +50,8 @@ docs-test:
 
 # Build and serve the documentation 📚
 docs:
-    @uv run mkdocs serve
+    @echo "📚 Serving documentation on http://127.0.0.1:8009"
+    @uv run mkdocs serve -a 127.0.0.1:8009
 
 # Run the app in development mode 🛠️ with reload ♻️
 dev:
