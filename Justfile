@@ -51,3 +51,8 @@ docs-test:
 # Build and serve the documentation
 docs:
     @uv run mkdocs serve
+
+# Run the app in development mode with reload
+dev:
+    @echo "🚀 Running app in development mode with reload"
+    @uv run uvicorn src.fastapi_uv.main:app --reload --port 8008
