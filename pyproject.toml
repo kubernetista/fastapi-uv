@@ -14,10 +14,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
-    "fastapi>=0.115.2",
-    "uvicorn>=0.31.1",
-]
+dependencies = ["fastapi>=0.115.2", "uvicorn>=0.31.1"]
 
 [project.urls]
 Homepage = "https://acola.github.io/fastapi-uv/"
