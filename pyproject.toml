@@ -36,8 +36,8 @@ dev-dependencies = [
 ]
 
 [build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.mypy]
 files = ["src/fastapi_uv"]
@@ -110,3 +110,6 @@ skip_empty = true
 [tool.coverage.run]
 branch = true
 source = ["fastapi_uv"]
+
+[tool.hatch.envs.default]
+installer = "uv"
