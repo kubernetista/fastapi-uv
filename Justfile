@@ -1,7 +1,7 @@
 # Justfile
 
-# First = default recipe
-list-recipes:
+# List all recipes (default)
+help:
     @just --list
 
 # Install the virtual environment and install the pre-commit hooks
@@ -36,7 +36,7 @@ clean-build:
     @echo "🚀 Removing build artifacts"
     @uv run python -c "import shutil; import os; shutil.rmtree('dist') if os.path.exists('dist') else None"
 
-# Publish a release to PyPI
+# Publish a release to PyPI (requires API token)
 publish:
     @echo "🚀 Publishing."
     @uvx twine upload --repository-url https://upload.pypi.org/legacy/ dist/*
@@ -51,8 +51,3 @@ docs-test:
 # Build and serve the documentation
 docs:
     @uv run mkdocs serve
-
-# Display help
-help:
-    @uv run python -c "import re; \
-    [[print(f'\033[36m{m[0]:<20}\033[0m {m[1]}') for m in re.findall(r'^([a-zA-Z_-]+):.*?## (.*)$$', open(justfile).read(), re.M)] for justfile in ('$(JUSTFILE_LIST)').strip().split()]"
