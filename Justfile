@@ -21,9 +21,9 @@ check:
     @echo "🚀 Checking for obsolete dependencies: Running deptry"
     @uv run deptry .
 
-# Test the code with pytest
+# Test code and generate test Coverage report
 test:
-    @echo "🚀 Testing code: Running pytest"
+    @echo "🚀 Testing code: Running pytest with coverage"
     @uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
 
 # Build wheel file
