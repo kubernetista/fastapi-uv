@@ -43,7 +43,7 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.mypy]
-files = ["fastapi_uv"]
+files = ["src/fastapi_uv"]
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
