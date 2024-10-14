@@ -1,5 +1,9 @@
 # Justfile
 
+# First = default recipe
+list-recipes:
+    @just --list
+
 # Install the virtual environment and install the pre-commit hooks
 install:
     @echo "🚀 Creating virtual environment using uv"
@@ -52,6 +56,3 @@ docs:
 help:
     @uv run python -c "import re; \
     [[print(f'\033[36m{m[0]:<20}\033[0m {m[1]}') for m in re.findall(r'^([a-zA-Z_-]+):.*?## (.*)$$', open(justfile).read(), re.M)] for justfile in ('$(JUSTFILE_LIST)').strip().split()]"
-
-# Default recipe
-default := help
