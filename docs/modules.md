@@ -1,1 +1,1 @@
-::: fastapi_uv.foo
+::: fastapi_uv.main
