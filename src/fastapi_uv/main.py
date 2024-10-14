@@ -5,7 +5,7 @@ app = FastAPI()
 
 
 @app.get("/")
-def root_route() -> dict[str, str]:
+def get_root() -> dict[str, str]:
     return {"message": "OK"}
 
 
