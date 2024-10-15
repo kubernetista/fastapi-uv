@@ -9,7 +9,7 @@ You can contribute in many ways:
 
 ## Report Bugs
 
-Report bugs at https://github.com/acola/fastapi-uv/issues
+Report bugs at <https://github.com/acola/fastapi-uv/issues>
 
 If you are reporting a bug, please include:
 
@@ -33,7 +33,7 @@ Cookiecutter PyPackage could always use more documentation, whether as part of t
 
 ## Submit Feedback
 
-The best way to send feedback is to file an issue at https://github.com/acola/fastapi-uv/issues.
+The best way to send feedback is to file an issue at <https://github.com/acola/fastapi-uv/issues>.
 
 If you are proposing a new feature:
 
@@ -42,7 +42,7 @@ If you are proposing a new feature:
 - Remember that this is a volunteer-driven project, and that contributions
   are welcome :)
 
-# Get Started!
+# Get Started
 
 Ready to contribute? Here's how to set up `fastapi-uv` for local development.
 Please note this documentation assumes you already have `uv` and `Git` installed and ready to go.
@@ -87,13 +87,13 @@ Now you can make your changes locally.
 7. When you're done making changes, check that your changes pass the formatting tests.
 
 ```bash
-make check
+just check
 ```
 
 Now, validate that all unit tests are passing:
 
 ```bash
-make test
+just test
 ```
 
 9. Before raising a pull request you should also run tox.
