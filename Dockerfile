@@ -12,10 +12,20 @@ ADD pyproject.toml /app/pyproject.toml
 # Install dependencies
 RUN uv sync --frozen --no-install-project
 
+# Copy pyproject into the image
+ADD pyproject.toml /app/
+
 # Copy the project into the image
-ADD . /app
+ADD ./src/ /app
+
+# Copy the README.md into the image
+ADD README.md /app/
 
 # Sync the project
 RUN uv sync --frozen
 
-CMD [ "python", "fastapi_uv/foo.py"]
+# set the environment variables
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH"
+
+CMD [ "python", "fastapi_uv/main.py"]
