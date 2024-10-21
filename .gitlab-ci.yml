@@ -3,10 +3,49 @@
 stages:
   - test
   - build
+  - integration-test
 
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
+
+test:
+  image: ubuntu:latest
+  stage: test
+  before_script:
+    # Install necessary packages
+    - apt-get update && apt-get install -y curl
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - source $HOME/.cargo/env
+    - uv --version
+    - uv python install 3.12
+    - uv run python --version
+  script:
+    # Run tests using uv
+    # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
+    - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - coverage.xml
+
+# test:
+#   image: python:3.12-alpine
+#   stage: test
+#   before_script:
+#     # Install necessary packages
+#     - python --version
+#     - python -m venv .venv
+#     - source .venv/bin/activate
+#     - pip install --upgrade pip
+#     - pip install pytest-cov
+#     # - apt-get update && apt-get install -y python3 python3-pip
+#   #   # Install uv using cargo
+#   #   - cargo install uv
 
 build:
   image: docker:latest
@@ -16,29 +55,12 @@ build:
   script:
     - docker build . -t fastapi-uv:latest --load
 
-test:
-  image: python:3.12-alpine
-  stage: test
-  before_script:
-    # Install necessary packages
-    - python --version
-    - python -m venv .venv
-    - source .venv/bin/activate
-    - pip install --upgrade pip
-    - pip install pytest-cov
-    # - apt-get update && apt-get install -y python3 python3-pip
-  #   # Install uv using cargo
-  #   - cargo install uv
+# Integration tests
+integration-test:
+  image: docker:latest
+  stage: integration-test
+  services:
+    - docker:dind
   script:
-    # Run tests using python
-    - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
-    # Run tests using uv
-    # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
-  # artifacts:
-  #   when: always
-  #   reports:
-  #     coverage_report:
-  #       coverage_format: cobertura
-  #       path: coverage.xml
-  #   paths:
-  #     - coverage.xml
+    - docker run --rm --name fastapi-uv -p 8004:8004 fastapi-uv:latest
+    # -
