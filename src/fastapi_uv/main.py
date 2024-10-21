@@ -12,6 +12,6 @@ def get_root() -> dict[str, str]:
 
 
 if __name__ == "__main__":
-    host = os.getenv("HOST", "0.0.0.0")  # noqa: S104
+    host = os.getenv("HOST", "0.0.0.0")  # noqa: S104  # nosec B104
     port = int(os.getenv("PORT", 8001))
     uvicorn.run(app, host=host, port=port)
