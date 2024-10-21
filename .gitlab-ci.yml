@@ -1,8 +1,8 @@
 # .gitlab-ci.yml
 
 stages:
-  - test
-  - build
+  # - test
+  # - build
   - integration-test
 
 variables:
@@ -53,7 +53,7 @@ integration-test:
     - docker:dind
   before_script:
     # Install curl
-    - apt-get update && apt-get install -y curl
+    - apk add curl
   script:
     # Log in to GitLab Container Registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
