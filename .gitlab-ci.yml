@@ -1,8 +1,8 @@
 # .gitlab-ci.yml
 
 stages:
-  - build
   - test
+  - build
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -19,12 +19,18 @@ build:
 test:
   image: python:3.12-alpine
   stage: test
-  # before_script:
-  #   # Install necessary packages
-  #   - apt-get update && apt-get install -y python3 python3-pip
+  before_script:
+    # Install necessary packages
+    - python --version
+    - python -m venv .venv
+    - source .venv/bin/activate
+    - pip install --upgrade pip
+    - pip install pytest-cov
+    # - apt-get update && apt-get install -y python3 python3-pip
   #   # Install uv using cargo
   #   - cargo install uv
   script:
+    # Run tests using python
     - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
     # Run tests using uv
     # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
