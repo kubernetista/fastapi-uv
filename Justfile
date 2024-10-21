@@ -94,7 +94,7 @@ dev:
 # Build 📦 the container
 build-container:
     @echo -e "\n🚀 Building container\n"
-    @docker build . -t {{IMAGE_NAME}} --load
+    docker build . -t {{IMAGE_NAME}} --load
 
 # Scan 🕵🏻‍♂️  the container for vulnerabilities using Trivy 🎯
 scan-container-trivy: build-container
@@ -116,7 +116,7 @@ push-container:
 # Run 🏃 the container locally
 run-container: build-container
     @echo -e "\n🏃 Running container locally\n"
-    @docker run --rm --name {{CONTAINER_NAME}} --detach -p {{PORT}}:{{PORT}} {{IMAGE_NAME}}
+    docker run --rm --name {{CONTAINER_NAME}} --detach -p {{PORT}}:{{PORT}} {{IMAGE_NAME}}
     @echo -e "\nContainer \"{{CONTAINER_NAME}}\" is accessible at http://localhost:{{PORT}}"
 
 # Stop 🛑 the running container
