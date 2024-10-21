@@ -17,12 +17,9 @@ test:
     - apt-get update && apt-get install -y curl
     - curl -LsSf https://astral.sh/uv/install.sh | sh
     - source $HOME/.cargo/env
-    - uv --version
     - uv python install 3.12
-    - uv run python --version
   script:
     # Run tests using uv
-    # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
     - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
   artifacts:
     when: always
@@ -33,20 +30,7 @@ test:
     paths:
       - coverage.xml
 
-# test:
-#   image: python:3.12-alpine
-#   stage: test
-#   before_script:
-#     # Install necessary packages
-#     - python --version
-#     - python -m venv .venv
-#     - source .venv/bin/activate
-#     - pip install --upgrade pip
-#     - pip install pytest-cov
-#     # - apt-get update && apt-get install -y python3 python3-pip
-#   #   # Install uv using cargo
-#   #   - cargo install uv
-
+# Build the Docker image
 build:
   image: docker:latest
   stage: build
