@@ -1,7 +1,7 @@
 # .gitlab-ci.yml
 
 stages:
-  # - test
+  - test
   - build
   - integration-test
 
@@ -9,27 +9,27 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 
-# # Test & coverage
-# test:
-#   image: ubuntu:latest
-#   stage: test
-#   before_script:
-#     # Install necessary packages
-#     - apt-get update && apt-get install -y curl
-#     - curl -LsSf https://astral.sh/uv/install.sh | sh
-#     - source $HOME/.cargo/env
-#     - uv python install 3.12
-#   script:
-#     # Run tests using uv
-#     - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
-#   artifacts:
-#     when: always
-#     reports:
-#       coverage_report:
-#         coverage_format: cobertura
-#         path: coverage.xml
-#     paths:
-#       - coverage.xml
+# Test & coverage
+test:
+  image: ubuntu:latest
+  stage: test
+  before_script:
+    # Install necessary packages
+    - apt-get update && apt-get install -y curl
+    - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - source $HOME/.cargo/env
+    - uv python install 3.12
+  script:
+    # Run tests using uv
+    - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - coverage.xml
 
 # Build the Docker image
 build:
