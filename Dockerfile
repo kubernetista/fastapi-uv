@@ -1,5 +1,7 @@
-# Install uv
+# syntax=docker/dockerfile:1
 FROM python:3.12-slim
+
+# Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
 # Change the working directory to the `app` directory
@@ -22,10 +24,11 @@ ADD ./src/ /app
 ADD README.md /app/
 
 # Sync the project
-RUN uv sync --frozen
+RUN uv sync --locked
 
 # set the environment variables
-ENV VIRTUAL_ENV=/app/.venv \
-    PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV=/app/.venv
+ENV PATH="/app/.venv/bin:$PATH"
 
+# Run the application
 CMD [ "python", "fastapi_uv/main.py"]
