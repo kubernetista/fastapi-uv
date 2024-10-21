@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12-slim
+# FROM python:3.12-slim
+FROM python:3.11-slim
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
@@ -12,7 +13,7 @@ COPY uv.lock /app/
 COPY pyproject.toml /app/
 
 # Install dependencies
-RUN uv version ; uv sync --frozen --no-install-project
+RUN uv version ; uv sync --locked --no-install-project
 
 # Copy pyproject into the image
 COPY pyproject.toml /app/
@@ -27,8 +28,14 @@ COPY README.md /app/
 RUN uv sync --locked
 
 # set the environment variables
-ENV VIRTUAL_ENV=/app/.venv
-ENV PATH="/app/.venv/bin:$PATH"
+ENV VIRTUAL_ENV=/app/.venv \
+    PATH="/app/.venv/bin:$PATH"
+
+ARG HOST
+ARG PORT
+
+ENV HOST=${HOST:-0.0.0.0}
+ENV PORT=${PORT:-8001}
 
 # Run the application
 CMD [ "python", "fastapi_uv/main.py"]
