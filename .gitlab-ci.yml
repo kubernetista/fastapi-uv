@@ -9,6 +9,7 @@ variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: ""
 
+# Test & coverage
 test:
   image: ubuntu:latest
   stage: test
@@ -37,14 +38,35 @@ build:
   services:
     - docker:dind
   script:
-    - docker build . -t fastapi-uv:latest --load
+    # Log in to GitLab Container Registry
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    # Build the Docker image and tag it
+    - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" . --push
+    # Push the image to the registry
+    # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
-# Integration tests
+# Integration test
 integration-test:
   image: docker:latest
   stage: integration-test
   services:
     - docker:dind
   script:
-    - docker run --rm --name fastapi-uv -p 8004:8004 fastapi-uv:latest
-    # -
+    # Log in to GitLab Container Registry
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    # Pull the Docker image from the registry
+    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    # Run the Docker container
+    - docker run -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    # Wait for the service to start
+    - sleep 5
+    # Get the container's IP address
+    - CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' fastapi-uv)
+    # Perform the curl test
+    - |
+      RESPONSE=$(curl -s http://$CONTAINER_IP:8001)
+      echo "Response from server: $RESPONSE"
+      # Check if the response matches the expected output
+      echo "$RESPONSE" | grep -q '"message": "OK"'
+    # Stop the container
+    - docker stop fastapi-uv
