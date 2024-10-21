@@ -140,3 +140,7 @@ remove-image:
 container-logs:
     @echo "📜 Viewing logs of the running container"
     @docker logs {{CONTAINER_NAME}}
+
+container-logs-f:
+    @echo "📜 Viewing logs of the running container"
+    @docker logs -f {{CONTAINER_NAME}}
