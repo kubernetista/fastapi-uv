@@ -66,7 +66,7 @@ integration-test:
     # # Perform the curl test
     - docker ps
     # Output container logs
-    - docker logs fastapi-uv | grep -q 'Uvicorn running'
+    - docker logs fastapi-uv 2>&1 | grep 'Uvicorn running'
     # # Output container logs for debugging
     # - docker logs fastapi-uv
     # # Get the container's IP address
