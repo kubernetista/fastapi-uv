@@ -15,23 +15,24 @@ build:
     - docker:dind
   script:
     - docker build . -t fastapi-uv:latest --load
-# test:
-#   image: python:3.12-alpine
-#   stage: test
-#   # before_script:
-#   #   # Install necessary packages
-#   #   - apt-get update && apt-get install -y python3 python3-pip
-#   #   # Install uv using cargo
-#   #   - cargo install uv
-#   script:
-#     # Run tests using uv
-#     # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
-#     - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
-#   artifacts:
-#     when: always
-#     reports:
-#       coverage_report:
-#         coverage_format: cobertura
-#         path: coverage.xml
-#     paths:
-#       - coverage.xml
+
+test:
+  image: python:3.12-alpine
+  stage: test
+  # before_script:
+  #   # Install necessary packages
+  #   - apt-get update && apt-get install -y python3 python3-pip
+  #   # Install uv using cargo
+  #   - cargo install uv
+  script:
+    # Run tests using uv
+    # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
+    - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
+  # artifacts:
+  #   when: always
+  #   reports:
+  #     coverage_report:
+  #       coverage_format: cobertura
+  #       path: coverage.xml
+  #   paths:
+  #     - coverage.xml
