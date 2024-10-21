@@ -73,7 +73,7 @@ integration-test:
     # Output container logs for debugging
     - docker logs fastapi-uv
     # Perform the curl test using 'docker' as the hostname
-    - RESPONSE=$(curl -s http://docker:8001)
+    - RESPONSE=$(curl -s http://localhost:8001)
     - |
       echo "Response from server: $RESPONSE"
     # Check if the response matches the expected output
