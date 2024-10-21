@@ -67,6 +67,7 @@ integration-test:
     - docker ps
     # Output container logs
     - docker logs fastapi-uv 2>&1 | grep 'Uvicorn running'
+
     # # Output container logs for debugging
     # - docker logs fastapi-uv
     # # Get the container's IP address
@@ -81,5 +82,6 @@ integration-test:
     # # Check if the response matches the expected output
     # - |
     #   echo "$RESPONSE" | grep -q '"message":"OK"'
+
     # Stop the container
     - docker stop fastapi-uv
