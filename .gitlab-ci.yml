@@ -2,7 +2,7 @@
 
 stages:
   - build
-  # - test
+  - test
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -25,9 +25,9 @@ test:
   #   # Install uv using cargo
   #   - cargo install uv
   script:
+    - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
     # Run tests using uv
     # - uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
-    - python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
   # artifacts:
   #   when: always
   #   reports:
