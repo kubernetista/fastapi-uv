@@ -60,13 +60,15 @@ container-test:
     # Pull the Docker image from the registry
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     # Run the Docker container
-    - docker run -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker run --privileged --network host -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     # Wait for the service to start
     - sleep 5
     # # Perform the curl test
     - docker ps
     # Output container logs
     - docker logs fastapi-uv 2>&1 | grep 'Uvicorn running'
+    # Perform the curl test
+    - curl http://localhost:8001 || curl http://127.0.0.1:8001
 
     # # Output container logs for debugging
     # - docker logs fastapi-uv
