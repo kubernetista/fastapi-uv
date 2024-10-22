@@ -24,7 +24,7 @@
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 
 stages:
-  - hello
+  - test
   # - test
   # - build
 
