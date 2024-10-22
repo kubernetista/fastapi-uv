@@ -1,6 +1,6 @@
 # .gitlab-ci.yml
 
 include:
-  - local: "gitlab-ci/gitlab.yml"
   - local: "gitlab-ci/dagger.yml"
+  - local: "gitlab-ci/gitlab.yml"
   # - local: "gitlab-ci/deploy.yml"
