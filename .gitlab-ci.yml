@@ -67,6 +67,8 @@ container-test:
     - docker ps
     # Output container logs
     - docker logs fastapi-uv 2>&1 | grep 'Uvicorn running'
+    # Docker inspect for debugging
+    - docker inspect fastapi-uv
     # Perform the curl test
     - curl http://localhost:8001 || curl http://127.0.0.1:8001
 
