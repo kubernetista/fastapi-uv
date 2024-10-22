@@ -55,12 +55,14 @@ container-test:
     # Install curl
     - apk add curl
   script:
+    # Docker info for debugging
+    - docker info
     # Log in to GitLab Container Registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     # Pull the Docker image from the registry
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     # Run the Docker container
-    - docker run --privileged --network host -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker run --privileged -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     # Wait for the service to start
     - sleep 5
     # # Perform the curl test
