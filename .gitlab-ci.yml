@@ -1,6 +1,14 @@
 # .gitlab-ci.yml
 
+stages:
+  # - lint
+  - test
+  - build
+  # - deploy
+  - pre-deploy-check
+  # - post-deploy-check
+
 include:
-  # - local: "gitlab-ci/gitlab.yml"
+  - local: "gitlab-ci/gitlab.yml"
   - local: "gitlab-ci/dagger.yml"
   # - local: "gitlab-ci/deploy.yml"

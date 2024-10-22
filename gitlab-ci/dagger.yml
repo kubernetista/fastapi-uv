@@ -1,5 +1,6 @@
 # gitlab-ci Dagger pipeline
 
+# Job template that defines the Docker-in-Docker service
 .docker:
   image: docker:latest
   services:
@@ -17,27 +18,28 @@
     # DAGGER_CLOUD_TOKEN: $DAGGER_CLOUD_TOKEN
     SHUTUP: "true"
 
+# Job template that installs the Dagger CLI
 .dagger:
   extends: [.docker]
   before_script:
     - apk add curl
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
+# prettier-ignore
 
-# stages:
-#   - hello
-#   # - test
-#   # - build
-
+# Dagger job that calls the hello function from the Daggerverse
 hello:
   extends: [.dagger]
+  stage: test
   script:
     - dagger -m github.com/shykes/daggerverse/hello@v0.1.2 call hello --greeting="Ciao" --name="Mondo"
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
+# Dagger job that calls the container-echo function from the local module
 goodbye:
   extends: [.dagger]
+  stage: test
   script:
     - dagger functions
     - dagger call container-echo --string-arg TEST

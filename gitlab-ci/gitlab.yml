@@ -1,18 +1,16 @@
 # .gitlab-ci/gitlab.yml
 
-stages:
-  - test
-  - build
-  - container-test
-
+# Define the variables
 variables:
+  # Recommended storage driver for Docker
   DOCKER_DRIVER: overlay2
+  # Disable TLS verification to simplify the setup with Docker-in-Docker
   DOCKER_TLS_CERTDIR: ""
 
-# Test & coverage
+# Job to run the tests and generates a coverage report
 test:
-  image: ubuntu:latest
   stage: test
+  image: ubuntu:latest
   before_script:
     # Install necessary packages
     - apt-get update && apt-get install -y curl
@@ -31,10 +29,10 @@ test:
     paths:
       - coverage.xml
 
-# Build the Docker image
+# Job to build the Docker image
 build:
-  image: docker:latest
   stage: build
+  image: docker:latest
   services:
     - docker:dind
   script:
@@ -45,10 +43,10 @@ build:
     # Push the image to the registry
     # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
-# Container test
+# Job to test the Docker container after it has been built
 container-test:
+  stage: pre-deploy-check
   image: docker:latest
-  stage: container-test
   services:
     - docker:dind
   before_script:
