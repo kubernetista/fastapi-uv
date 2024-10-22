@@ -23,10 +23,10 @@
     - apk add curl
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 
-stages:
-  - test
-  # - test
-  # - build
+# stages:
+#   - test
+#   # - test
+#   # - build
 
 test:
   extends: [.dagger]
