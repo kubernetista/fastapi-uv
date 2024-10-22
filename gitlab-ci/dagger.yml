@@ -15,7 +15,7 @@
     # in a masked/protected variable named DAGGER_CLOUD_TOKEN
     # set via the GitLab UI
     # DAGGER_CLOUD_TOKEN: $DAGGER_CLOUD_TOKEN
-    # SHUTUP: "true"
+    SHUTUP: "true"
 
 .dagger:
   extends: [.docker]
@@ -31,7 +31,7 @@
 hello:
   extends: [.dagger]
   script:
-    - dagger -m github.com/shykes/daggerverse/hello@v0.1.2 call hello --greeting="bonjour" --name="monde"
+    - dagger -m github.com/shykes/daggerverse/hello@v0.1.2 call hello --greeting="Ciao" --name="Mondo"
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
