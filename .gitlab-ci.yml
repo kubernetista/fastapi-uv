@@ -3,7 +3,7 @@
 stages:
   - test
   - build
-  - integration-test
+  - container-test
 
 variables:
   DOCKER_DRIVER: overlay2
@@ -45,8 +45,8 @@ build:
     # Push the image to the registry
     # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
-# Integration test
-integration-test:
+# Container test
+container-test:
   image: docker:latest
   stage: integration-test
   services:
