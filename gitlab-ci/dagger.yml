@@ -11,11 +11,11 @@
     DOCKER_CERT_PATH: "/certs/client"
     DOCKER_DRIVER: overlay2
     DOCKER_VERSION: "27.2.0"
-
     # assumes the Dagger Cloud token is
     # in a masked/protected variable named DAGGER_CLOUD_TOKEN
     # set via the GitLab UI
-    DAGGER_CLOUD_TOKEN: $DAGGER_CLOUD_TOKEN
+    # DAGGER_CLOUD_TOKEN: $DAGGER_CLOUD_TOKEN
+    # SHUTUP: "true"
 
 .dagger:
   extends: [.docker]
@@ -24,11 +24,11 @@
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 
 # stages:
-#   - test
+#   - hello
 #   # - test
 #   # - build
 
-test:
+hello:
   extends: [.dagger]
   script:
     - dagger -m github.com/shykes/daggerverse/hello@v0.1.2 call hello --greeting="bonjour" --name="monde"
