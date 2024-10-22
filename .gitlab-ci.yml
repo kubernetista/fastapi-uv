@@ -48,7 +48,7 @@ build:
 # Container test
 container-test:
   image: docker:latest
-  stage: integration-test
+  stage: container-test
   services:
     - docker:dind
   before_script:
