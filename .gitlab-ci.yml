@@ -71,16 +71,18 @@ container-test:
     - docker logs fastapi-uv 2>&1 | grep 'Uvicorn running'
     # Docker inspect for debugging
     - docker inspect fastapi-uv
-    # Perform the curl test
-    - curl http://localhost:8001 || curl http://127.0.0.1:8001
 
     # # Output container logs for debugging
     # - docker logs fastapi-uv
-    # # Get the container's IP address
-    # - export CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' fastapi-uv)
-    # - |
-    #   echo "Container IP: $CONTAINER_IP"
+
+    # Get the container's IP address
+    - export CONTAINER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' fastapi-uv)
+    - |
+      echo "Container IP: $CONTAINER_IP"
     # - RESPONSE=$(curl -s http://$CONTAINER_IP:8001)
+    # Perform the curl test
+    - curl http://localhost:8001 || curl http://127.0.0.1:8001 || curl http://$CONTAINER_IP:8001
+
     # Perform the curl test using 'docker' as the hostname
     # - RESPONSE=$(curl -s http://localhost:8001)
     # - |
