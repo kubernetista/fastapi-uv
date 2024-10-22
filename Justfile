@@ -5,7 +5,7 @@ IMAGE_NAME := "fastapi-uv:latest"
 CONTAINER_NAME := "fastapi-uv-container"
 PORT := "8001"
 
-# List 📜 all recipes (default)
+# List 📜 all recipes (this!)
 help:
     @just --list
 
@@ -86,10 +86,12 @@ docs:
     @echo "📚 Serving documentation on http://127.0.0.1:8009"
     @uv run mkdocs serve -a 127.0.0.1:8009
 
-# Run 🛠️ the app in development mode with reload ♻️
-dev:
+# Run 🛠️ the app in development mode with reload ♻️  (alias: dev)
+code-run:
     @echo "🚀 Running app in development mode with reload"
     @uv run uvicorn src.fastapi_uv.main:app --reload --port 8008
+
+alias dev := code-run
 
 # Build 📦 the container
 build-container:
@@ -108,14 +110,14 @@ scan-container-grype: build-container
     @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Grype 👾\n"
     @grype --only-fixed {{IMAGE_NAME}}
 
-# Push 🚀 the container to Docker registry
+# Push 📦 the container to Docker registry
 push-container:
-    @echo "🚀 Pushing container to Docker registry"
+    @echo "📦 Pushing container to Docker registry"
     @docker push {{IMAGE_NAME}}
 
-# Run 🏃 the container locally
-run-container: build-container
-    @echo -e "\n🏃 Running container locally\n"
+# Start 🚀 the container
+start-container: build-container
+    @echo "\n🚀 Starting the container {{CONTAINER_NAME}}\n"
     docker run --rm --name {{CONTAINER_NAME}} --detach -p {{PORT}}:{{PORT}} {{IMAGE_NAME}}
     @echo -e "\nContainer \"{{CONTAINER_NAME}}\" is accessible at http://localhost:{{PORT}}"
 
@@ -138,9 +140,10 @@ remove-image:
 
 # View 📜 logs of the running container
 container-logs:
-    @echo "📜 Viewing logs of the running container"
+    @echo "📜 View logs of the running container"
     @docker logs {{CONTAINER_NAME}}
 
+# View 📜 and follow 🍿 logs of the running container
 container-logs-f:
-    @echo "📜 Viewing logs of the running container"
+    @echo "📜 View and follow logs of the running container"
     @docker logs -f {{CONTAINER_NAME}}
