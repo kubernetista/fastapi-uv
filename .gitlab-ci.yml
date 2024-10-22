@@ -62,7 +62,7 @@ container-test:
     # Pull the Docker image from the registry
     - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
     # Run the Docker container
-    - docker run --privileged -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker run --privileged -d --rm --name fastapi-uv "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" -p 8001:8001
     # Wait for the service to start
     - sleep 5
     # # Perform the curl test
