@@ -1,9 +1,11 @@
 # Justfile
 
 # Variables
-IMAGE_NAME := "fastapi-uv:latest"
-CONTAINER_NAME := "fastapi-uv-container"
-PORT := "8001"
+VAR_IMAGE_NAME := "fastapi-uv:latest"
+VAR_CONTAINER_NAME := "fastapi-uv-container"
+VAR_PORT := "8001"
+VAR_PORT_DEV := "8008"
+VAR_PORT_DOC := "8009"
 
 # List 📜 all recipes (this!)
 help:
@@ -85,67 +87,69 @@ docs-test:
 
 # Build 📚 and serve the documentation
 docs:
-    @echo "📚 Serving documentation on http://127.0.0.1:8009"
-    @uv run mkdocs serve -a 127.0.0.1:8009
+    @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{VAR_PORT_DOC}}"
+    @uv run mkdocs serve -a 127.0.0.1:{{VAR_PORT_DOC}}
 
 # Run 🛠️ the app in development mode with reload ♻️  (alias: dev)
 code-run:
-    @echo "🚀 Running app in development mode with reload"
-    @uv run uvicorn src.fastapi_uv.main:app --reload --port 8008
+    @echo -e "\n🚀 Running app in development mode (with reload)\n"
+    #@ uv run --with "fastapi[standard]" fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
+    @ uv run fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
+    @# @uv run uvicorn src.fastapi_uv.main:app --reload --port {{VAR_PORT_DEV}}
 
 alias dev := code-run
 
 # Build 📦 the container
-build-container:
+container-build:
     @echo -e "\n🚀 Building container\n"
-    docker build . -t {{IMAGE_NAME}} --load
+    docker build . -t {{VAR_IMAGE_NAME}} --load
 
 # Scan 🕵🏻‍♂️  the container for vulnerabilities using Trivy 🎯
-scan-container-trivy: build-container
+scan-container-trivy: container-build
     @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Trivy 🎯\n"
-    # @trivy image {{IMAGE_NAME}}
-    # @trivy image --severity HIGH,CRITICAL {{IMAGE_NAME}}
-    @trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{IMAGE_NAME}}
+    # @trivy image {{VAR_IMAGE_NAME}}
+    # @trivy image --severity HIGH,CRITICAL {{VAR_IMAGE_NAME}}
+    @trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{VAR_IMAGE_NAME}}
 
 # Scan 🕵🏻‍♂️  the container for vulnerabilities using Grype 👾
-scan-container-grype: build-container
+scan-container-grype: container-build
     @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Grype 👾\n"
-    @grype --only-fixed {{IMAGE_NAME}}
+    @grype --only-fixed {{VAR_IMAGE_NAME}}
 
 # Push 📦 the container to Docker registry
-push-container:
+container-push:
     @echo "📦 Pushing container to Docker registry"
-    @docker push {{IMAGE_NAME}}
+    @docker push {{VAR_IMAGE_NAME}}
 
 # Start 🚀 the container
-start-container: build-container
-    @echo "\n🚀 Starting the container {{CONTAINER_NAME}}\n"
-    docker run --rm --name {{CONTAINER_NAME}} --detach -p {{PORT}}:{{PORT}} {{IMAGE_NAME}}
-    @echo -e "\nContainer \"{{CONTAINER_NAME}}\" is accessible at http://localhost:{{PORT}}"
+container-start: container-build
+    @echo -e "\n🚀 Starting the container {{VAR_CONTAINER_NAME}}\n"
+    docker run --rm --name {{VAR_CONTAINER_NAME}} --detach -p {{VAR_PORT}}:8001 {{VAR_IMAGE_NAME}}
+    @echo -e "\nContainer \"{{VAR_CONTAINER_NAME}}\" is accessible at http://localhost:{{VAR_PORT}}"
 
 # Stop 🛑 the running container
-stop-container:
+container-stop:
     @echo -e "\n🛑 Stopping running container\n"
-    @docker stop {{CONTAINER_NAME}}
-    @echo -e "\nContainer \"{{CONTAINER_NAME}}\" removed"
+    @docker stop {{VAR_CONTAINER_NAME}}
+    @echo -e "\nContainer \"{{VAR_CONTAINER_NAME}}\" removed"
 
 # Remove 🗑️ the container
-remove-container:
+container-remove:
     @echo "🗑️ Removing container"
-    @docker rm {{CONTAINER_NAME}}
+    @docker rm {{VAR_CONTAINER_NAME}}
 
 # Remove 🗑️ the Docker image
-remove-image:
+image-remove:
     @echo "🗑️ Removing Docker image"
-    @docker rmi {{IMAGE_NAME}}
-    @echo "\nContainer image \"{{IMAGE_NAME}}\" removed"
+    @docker rmi {{VAR_IMAGE_NAME}}
+    @echo "\nContainer image \"{{VAR_IMAGE_NAME}}\" removed"
 
 # View 📜 logs of the running container
 container-logs:
     @echo "📜 View logs of the running container"
-    @docker logs {{CONTAINER_NAME}}
+    @docker logs {{VAR_CONTAINER_NAME}}
 
 # View 📜 and follow 🍿 logs of the running container
 container-logs-f:
     @echo "📜 View and follow logs of the running container"
-    @docker logs -f {{CONTAINER_NAME}}
+    @docker logs -f {{VAR_CONTAINER_NAME}}
