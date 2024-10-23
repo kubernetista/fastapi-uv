@@ -30,6 +30,6 @@ RUN uv sync --locked
 ENV VIRTUAL_ENV=/app/.venv \
     PATH="/app/.venv/bin:$PATH"
 
-# Run the application
+# Run the app
 # CMD [ "python", "fastapi_uv/main.py"]
 CMD ["fastapi", "run", "fastapi_uv/main.py", "--proxy-headers", "--port", "8001"]
