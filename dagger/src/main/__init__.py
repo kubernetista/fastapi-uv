@@ -6,8 +6,11 @@
 # For example, to import from src/main/main.py:
 # >>> from .main import FastapiUv as FastapiUv
 
+# import random
+from typing import Annotated
+
 import dagger
-from dagger import dag, function, object_type
+from dagger import Doc, dag, function, object_type
 
 
 @object_type
@@ -28,3 +31,22 @@ class FastapiUv:
     #         .with_exec(["grep", "-R", pattern, "."])
     #         .stdout()
     #     )
+
+    @function
+    async def build(
+        self,
+        src: Annotated[
+            dagger.Directory,
+            Doc("location of directory containing Dockerfile"),
+        ],
+    ) -> dagger.Container:
+        """Build and publish image from existing Dockerfile"""
+        ref = (
+            dag.container()
+            .with_directory(".", src)
+            .with_workdir("/")
+            .directory(".")
+            .docker_build()  # build from Dockerfile
+            # .publish("ttl.sh/hello-dagger")
+        )
+        return await ref
