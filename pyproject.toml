@@ -15,7 +15,10 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["fastapi>=0.115.2", "uvicorn>=0.31.1"]
+dependencies = [
+ "fastapi[standard]>=0.115.3",
+ "uvicorn>=0.31.1",
+]
 
 [project.urls]
 Homepage = "https://acola.github.io/fastapi-uv/"
@@ -34,7 +37,10 @@ dev-dependencies = [
     "mkdocs>=1.4.2",
     "mkdocs-material>=8.5.10",
     "mkdocstrings[python]>=0.26.1",
+    "pyright>=1.1.386",
 ]
+cache-keys = [{ file = "pyproject.toml" }, { git = true }]
+
 
 [build-system]
 requires = ["hatchling"]
