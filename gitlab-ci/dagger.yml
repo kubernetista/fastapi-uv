@@ -41,7 +41,7 @@ hello:
 goodbye:
   extends: [.dagger]
   stage: test
-  # needs: ["hello"]
+  # needs: ["hello"]    # Just a TEST
   script:
     - dagger functions
     - dagger call container-echo --string-arg TEST
