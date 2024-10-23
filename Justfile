@@ -27,14 +27,16 @@ pre-commit-check:
 
 # Run 🔎 code quality tools
 check:
-    @echo "🚀 Checking lock file consistency with 'pyproject.toml'"
+    @echo -e "\n🚀 Checking lock file consistency with 'pyproject.toml'"
     @uv lock --locked
-    @echo "🚀 Linting code: Running pre-commit"
-    @uv run pre-commit run -a
-    @echo "🚀 Static type checking: Running mypy"
+    @echo -e "\n🚀 Linting code: Running pre-commit"
+    @uv run pre-commit run --all-files
+    @echo -e "\n🚀 Static type checking: Running mypy"
     @uv run mypy ./src
-    @echo "🚀 Checking for obsolete dependencies: Running deptry"
+    @echo -e "\n🚀 Checking for obsolete dependencies: Running deptry"
     @uv run deptry ./src
+    @echo -e "\n🚀 Running Pyright for type checking"
+    @uv run --with pyright pyright ./src
 
 # Test 🧪 code and generate test Coverage report
 test:
