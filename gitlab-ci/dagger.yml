@@ -63,7 +63,7 @@ push:
   extends: [.dagger]
   stage: build
   script:
-    - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
+    # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
     - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud

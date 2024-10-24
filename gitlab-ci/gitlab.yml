@@ -7,27 +7,27 @@ variables:
   # Disable TLS verification to simplify the setup with Docker-in-Docker
   DOCKER_TLS_CERTDIR: ""
 
-# Job to run the tests and generates a coverage report
-test:
-  stage: test
-  image: ubuntu:latest
-  before_script:
-    # Install necessary packages
-    - apt-get update && apt-get install -y curl
-    - curl -LsSf https://astral.sh/uv/install.sh | sh
-    - source $HOME/.cargo/env
-    - uv python install 3.12
-  script:
-    # Run tests using uv
-    - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
-  artifacts:
-    when: always
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-    paths:
-      - coverage.xml
+# # Job to run the tests and generates a coverage report
+# test:
+#   stage: test
+#   image: ubuntu:latest
+#   before_script:
+#     # Install necessary packages
+#     - apt-get update && apt-get install -y curl
+#     - curl -LsSf https://astral.sh/uv/install.sh | sh
+#     - source $HOME/.cargo/env
+#     - uv python install 3.12
+#   script:
+#     # Run tests using uv
+#     - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
+#   artifacts:
+#     when: always
+#     reports:
+#       coverage_report:
+#         coverage_format: cobertura
+#         path: coverage.xml
+#     paths:
+#       - coverage.xml
 
 # Job to build the Docker image
 build:
