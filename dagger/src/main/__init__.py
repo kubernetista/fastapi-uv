@@ -37,7 +37,7 @@ class FastapiUv:
     #   --password=env:GITLAB_TOKEN --path "acola/fastapi-uv" --image "my-nginx-2" \
     #   --tag "v1"
     @function
-    async def publish(
+    async def build_publish(
         self,
         src: Annotated[
             dagger.Directory,
