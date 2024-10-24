@@ -59,6 +59,10 @@ class FastapiUv:
     @function
     async def publish(
         self,
+        src: Annotated[
+            dagger.Directory,
+            Doc("location of directory containing Dockerfile"),
+        ],
         registry: Annotated[str, Doc("Registry address")],
         username: Annotated[str, Doc("Registry username")],
         password: Annotated[dagger.Secret, Doc("Registry password")],
@@ -67,14 +71,15 @@ class FastapiUv:
         tag: Annotated[str, Doc("Image tag")],
     ) -> str:
         """Publish a container image to a private registry"""
+        container = await self.build(src)
         return await (
-            dag.container()
-            .from_("nginx:1-alpine")
-            .with_new_file(
-                "/usr/share/nginx/html/index.html",
-                "Hello from Dagger!",
-                permissions=0o400,
-            )
-            .with_registry_auth(registry, username, password)
-            .publish(f"{registry}/{path}/{image}:{tag}")
+            # self.build(src)
+            # dag.container()
+            # .from_("nginx:1-alpine")
+            # .with_new_file(
+            #     "/usr/share/nginx/html/index.html",
+            #     "Hello from Dagger!",
+            #     permissions=0o400,
+            # )
+            container.with_registry_auth(registry, username, password).publish(f"{registry}/{path}/{image}:{tag}")
         )
