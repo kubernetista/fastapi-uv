@@ -1,5 +1,12 @@
 # Justfile
 
+# Initialization
+set shell := ["zsh", "-l", "-cu"]
+### set shell := ["zsh", "-l", "-c"]
+### set shell := ["bash", "-c"]
+
+# set script-interpreter := ['bash', '-eu']
+
 # Variables
 VAR_IMAGE_NAME     := "fastapi-uv:latest"
 VAR_CONTAINER_NAME := "fastapi-uv-container"
@@ -19,14 +26,14 @@ code-install:
 
 # Run 🛠️ the app in development mode with reload ♻️  (alias: dev)
 code-run:
-    @echo -e "\n🚀 Running app in development mode (with reload)\n"
+    @/bin/echo -e "\n🚀 Running app in development mode (with reload)\n"
     #@ uv run --with "fastapi[standard]" fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
     @ uv run fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
     @# @uv run uvicorn src.fastapi_uv.main:app --reload --port {{VAR_PORT_DEV}}
 
 alias dev := code-run
 
-# Test 🧪 code and generate test Coverage report
+# Test 🧪 code and generate test Coverage report  (alias: test)
 code-test:
     @echo -e "\n🚀 Testing code: Running pytest with coverage\n"
     @uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
@@ -92,22 +99,11 @@ code-package-publish:
 # Build 📦 and publish 📰
 code-package-build-publish:  code-package-build  code-package-publish
 
+## Container recipes
 # Build 📦 the container
 container-build:
     @echo -e "\n🚀 Building container\n"
     docker build . -t {{VAR_IMAGE_NAME}} --load
-
-# Scan 🕵🏻‍♂️  the container for vulnerabilities using Trivy 🎯
-container-scan-trivy: container-build
-    @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Trivy 🎯\n"
-    # @trivy image {{VAR_IMAGE_NAME}}
-    # @trivy image --severity HIGH,CRITICAL {{VAR_IMAGE_NAME}}
-    @trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{VAR_IMAGE_NAME}}
-
-# Scan 🕵🏻‍♂️  the container for vulnerabilities using Grype 👾
-container-scan-grype: container-build
-    @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Grype 👾\n"
-    @grype --only-fixed {{VAR_IMAGE_NAME}}
 
 # Push 📦 the container to Docker registry
 container-push:
@@ -125,6 +121,11 @@ container-stop:
     @echo -e "\n🛑 Stopping container\n"
     @docker stop {{VAR_CONTAINER_NAME}}
     @echo -e "\n🗑️ Container removed"
+
+# Shell into 🚪 the container
+container-shell:
+    @echo -e "\n🚪 Connecting to container shell\n"
+    @docker exec -it  {{VAR_CONTAINER_NAME}} /bin/bash
 
 # Remove 🗑️ the container
 container-remove:
@@ -147,6 +148,20 @@ container-logs-f:
     @echo "📜 View and follow logs of the running container"
     @docker logs -f {{VAR_CONTAINER_NAME}}
 
+# Scan 🕵🏻‍♂️  the container for vulnerabilities using Trivy 🎯
+container-scan-trivy: container-build
+    @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Trivy 🎯\n"
+    # @trivy image {{VAR_IMAGE_NAME}}
+    # @trivy image --severity HIGH,CRITICAL {{VAR_IMAGE_NAME}}
+    @trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{VAR_IMAGE_NAME}}
+
+# Scan 🕵🏻‍♂️  the container for vulnerabilities using Grype 👾
+container-scan-grype: container-build
+    @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Grype 👾\n"
+    @grype --only-fixed {{VAR_IMAGE_NAME}}
+
+
+## Documentation recipes
 # Test 📚 if documentation can be built without warnings or errors
 docs-test:
     @uv run mkdocs build -s
