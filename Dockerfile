@@ -7,24 +7,15 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 # Change the working directory to the `app` directory
 WORKDIR /app
 
-# Copy the lockfile and `pyproject.toml` into the image
-COPY uv.lock /app/
+# Copy `pyproject.toml` and the lockfile
 COPY pyproject.toml /app/
+COPY uv.lock /app/
 
 # Install dependencies
 RUN uv version ; uv sync --locked --no-install-project
 
-# Copy pyproject into the image
-COPY pyproject.toml /app/
-
 # Copy the project into the image
 COPY ./src/ /app
-
-# Copy the README.md into the image
-COPY README.md /app/
-
-# Sync the project
-RUN uv sync --locked
 
 # set the environment variables
 ENV VIRTUAL_ENV=/app/.venv \
