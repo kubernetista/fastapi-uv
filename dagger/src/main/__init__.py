@@ -47,6 +47,32 @@ class FastapiUv:
             .with_workdir("/")
             .directory(".")
             .docker_build()  # build from Dockerfile
+            .with_registry_auth("ttl.sh")
+            # .with_registry("ghcr.io")
             # .publish("ttl.sh/hello-dagger")
         )
         return await ref
+
+    # dagger call publish --registry=registry.gitlab.com --username=acola --password=env:GITLAB_TOKEN --path "/fastapi-uv" --image "my-nginx-2" --tag "v1"
+    @function
+    async def publish(
+        self,
+        registry: Annotated[str, Doc("Registry address")],
+        username: Annotated[str, Doc("Registry username")],
+        password: Annotated[dagger.Secret, Doc("Registry password")],
+        path: Annotated[str, Doc("Path to image")],
+        image: Annotated[str, Doc("Image name")],
+        tag: Annotated[str, Doc("Image tag")],
+    ) -> str:
+        """Publish a container image to a private registry"""
+        return await (
+            dag.container()
+            .from_("nginx:1-alpine")
+            .with_new_file(
+                "/usr/share/nginx/html/index.html",
+                "Hello from Dagger!",
+                permissions=0o400,
+            )
+            .with_registry_auth(registry, username, password)
+            .publish(f"{registry}/{username}{path}/{image}:{tag}")
+        )
