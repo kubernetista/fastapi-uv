@@ -136,10 +136,14 @@ container-start: container-build
 
 alias start := container-start
 
+# Usage: JUST_IMAGE_NAME=ghcr.io/username/app:latest just start-image
+# Start 🚀 the container from the image in the env variable JUST_IMAGE_NAME
 container-start-from-image:
     @echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image ${JUST_IMAGE_NAME}"
     docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 ${JUST_IMAGE_NAME}
     @echo -e "\n🎁 Container available: 🔗 http://localhost:{{JUST_PORT}}"
+
+alias start-image := container-start-from-image
 
 # Push 📦 the container to Docker registry
 container-push:
