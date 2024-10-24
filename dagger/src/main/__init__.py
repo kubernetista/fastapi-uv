@@ -74,5 +74,5 @@ class FastapiUv:
                 permissions=0o400,
             )
             .with_registry_auth(registry, username, password)
-            .publish(f"{registry}/{username}{path}/{image}:{tag}")
+            .publish(f"{registry}/{path}/{image}:{tag}")
         )
