@@ -10,6 +10,12 @@ set shell := ["zsh", "-l", "-cu"]
 # Variables
 JUST_IMAGE_NAME     := "fastapi-uv"
 JUST_CONTAINER_NAME := "fastapi-uv-container"
+JUST_REGISTRY:= "registry.gitlab.com"
+JUST_REG_USERNAME:= "acola"
+JUST_REG_PASSWORD:= "env:GITLAB_TOKEN"
+JUST_REG_PATH:= "acola/fastapi-uv"
+JUST_CONTAINER_TAG:= "$(git rev-parse --short=8 HEAD)"
+JUST_CONTAINER_SRC:= "."
 
 # JUST_DOCKERFILE     := "Dockerfile"         # Python 3.12 image
 JUST_DOCKERFILE     := "alpine.dockerfile"    # Python 3.12 Alpine image
@@ -192,3 +198,8 @@ docs-test:
 docs:
     @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
     uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
+
+# Build and publish the container to the registry with Dagger 🗡️
+dagger-publish:
+    @echo "\n🗡️ Dagger publish\n"
+    dagger call publish --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
