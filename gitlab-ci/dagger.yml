@@ -52,7 +52,7 @@
 # Dagger job that calls the build function from the local module
 build:
   extends: [.dagger]
-  stage: build
+  stage: test
   script:
     - dagger call build --src=.
     # for ephemeral runners only: override the default docker stop timeout and
