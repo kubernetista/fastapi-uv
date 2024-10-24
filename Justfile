@@ -137,7 +137,7 @@ container-start: container-build
 
 alias start := container-start
 
-# Start 🚀 the container from the image (i.e: ghcr.io/username/app:latest)
+# Start 🚀 the container from the image (i.e: ghcr.io/user/app:latest)
 container-start-from-image $ARG_IMAGE_NAME:
     #!/usr/bin/env bash
     echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image:\n ➡️ {{ARG_IMAGE_NAME}}\n"
@@ -222,12 +222,3 @@ dagger-build:
 dagger-build-push:
     @echo "\n🗡️ Dagger build and push\n"
     dagger call build-push --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
-
-shebang:
-    #!/usr/bin/env bash
-    echo "🚀 shebang"
-    read -p 'test? ' var
-    echo "💭 $var"
-
-arguments arg:
-    @echo "🚀 arguments: {{arg}}"
