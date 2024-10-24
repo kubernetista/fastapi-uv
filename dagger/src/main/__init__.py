@@ -53,7 +53,9 @@ class FastapiUv:
         )
         return await ref
 
-    # dagger call publish --registry=registry.gitlab.com --username=acola --password=env:GITLAB_TOKEN --path "/fastapi-uv" --image "my-nginx-2" --tag "v1"
+    # dagger call publish --registry=registry.gitlab.com --username=acola \
+    #   --password=env:GITLAB_TOKEN --path "acola/fastapi-uv" --image "my-nginx-2" \
+    #   --tag "v1"
     @function
     async def publish(
         self,
