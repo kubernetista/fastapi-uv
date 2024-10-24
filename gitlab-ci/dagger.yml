@@ -58,6 +58,15 @@ build:
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
+
+push:
+  extends: [.dagger]
+  stage: build
+  script:
+    - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_REGISTRY_IMAGE" --tag "$CI_COMMIT_SHORT_SHA"
+    # for ephemeral runners only: override the default docker stop timeout and
+    # give the Dagger Engine more time to push cache data to Dagger Cloud
+    - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 #
 # test:
 #   extends: [.dagger]
