@@ -38,7 +38,7 @@
 #     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
 # Build and push using Dagger
-push:
+dagger-build-push:
   extends: [.dagger]
   stage: push
   script:
