@@ -52,6 +52,5 @@ class FastapiUv:
     ) -> str:
         """Publish a container image to a private registry"""
         container = await self.build(src)
-        return await container.with_registry_auth(registry, username, password).publish(
-            f"{registry}/{path}/{image}:{tag}"
-        )
+        image_name = f"{registry}/{path}/{image}:{tag}"
+        return await container.with_registry_auth(registry, username, password).publish(image_name)
