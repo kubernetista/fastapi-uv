@@ -27,28 +27,6 @@
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 # prettier-ignore
 
-# # Dagger job that calls the hello function from the Daggerverse
-# hello:
-#   extends: [.dagger]
-#   stage: test
-#   script:
-#     - dagger -m github.com/shykes/daggerverse/hello@v0.1.2 call hello --greeting="Ciao" --name="Mondo"
-#     # for ephemeral runners only: override the default docker stop timeout and
-#     # give the Dagger Engine more time to push cache data to Dagger Cloud
-#     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
-
-# # Dagger job that calls the container-echo function from the local module
-# goodbye:
-#   extends: [.dagger]
-#   stage: test
-#   # needs: ["hello"]    # Just a TEST
-#   script:
-#     - dagger functions
-#     - dagger call container-echo --string-arg=TEST
-#     # for ephemeral runners only: override the default docker stop timeout and
-#     # give the Dagger Engine more time to push cache data to Dagger Cloud
-#     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
-
 # Dagger job that calls the build function from the local module
 # build:
 #   extends: [.dagger]
@@ -61,10 +39,11 @@
 
 push:
   extends: [.dagger]
+  name: dagger build and push
   stage: push
   script:
     # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
-    - dagger call build-publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA" --src .
+    - dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA" --src .
     # - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "" --tag "$CI_COMMIT_SHORT_SHA"
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
