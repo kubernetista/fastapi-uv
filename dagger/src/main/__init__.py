@@ -16,23 +16,6 @@ from dagger import Doc, dag, function, object_type
 @object_type
 class FastapiUv:
     @function
-    def container_echo(self, string_arg: str) -> dagger.Container:
-        """Returns a container that echoes whatever string argument is provided 🚀"""
-        return dag.container().from_("alpine:latest").with_exec(["echo", string_arg])
-
-    # @function
-    # async def grep_dir(self, directory_arg: dagger.Directory, pattern: str) -> str:
-    #     """Returns lines that match a pattern in the files of the provided Directory"""
-    #     return await (
-    #         dag.container()
-    #         .from_("alpine:latest")
-    #         .with_mounted_directory("/mnt", directory_arg)
-    #         .with_workdir("/mnt")
-    #         .with_exec(["grep", "-R", pattern, "."])
-    #         .stdout()
-    #     )
-
-    @function
     async def build(
         self,
         src: Annotated[
@@ -40,16 +23,13 @@ class FastapiUv:
             Doc("location of directory containing Dockerfile"),
         ],
     ) -> dagger.Container:
-        """Build and publish image from existing Dockerfile"""
+        """Build image from existing Dockerfile"""
         ref = (
             dag.container()
             .with_directory(".", src)
             .with_workdir("/")
             .directory(".")
             .docker_build()  # build from Dockerfile
-            # .with_registry_auth("ttl.sh")
-            # .with_registry("ghcr.io")
-            # .publish("ttl.sh/hello-dagger")
         )
         return await ref
 
@@ -72,14 +52,6 @@ class FastapiUv:
     ) -> str:
         """Publish a container image to a private registry"""
         container = await self.build(src)
-        return await (
-            # self.build(src)
-            # dag.container()
-            # .from_("nginx:1-alpine")
-            # .with_new_file(
-            #     "/usr/share/nginx/html/index.html",
-            #     "Hello from Dagger!",
-            #     permissions=0o400,
-            # )
-            container.with_registry_auth(registry, username, password).publish(f"{registry}/{path}/{image}:{tag}")
+        return await container.with_registry_auth(registry, username, password).publish(
+            f"{registry}/{path}/{image}:{tag}"
         )
