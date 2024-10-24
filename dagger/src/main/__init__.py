@@ -47,7 +47,7 @@ class FastapiUv:
             .with_workdir("/")
             .directory(".")
             .docker_build()  # build from Dockerfile
-            .with_registry_auth("ttl.sh")
+            # .with_registry_auth("ttl.sh")
             # .with_registry("ghcr.io")
             # .publish("ttl.sh/hello-dagger")
         )
