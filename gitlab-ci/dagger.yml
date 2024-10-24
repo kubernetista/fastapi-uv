@@ -43,7 +43,7 @@ dagger-build-push:
   stage: push
   script:
     # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
-    - export IMAGE_TAG=$(git describe --tags --abbrev=1)
+    - export IMAGE_TAG=$(git describe --tags --abbrev=7)
     - dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     # - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "" --tag "$CI_COMMIT_SHORT_SHA"
     # for ephemeral runners only: override the default docker stop timeout and
