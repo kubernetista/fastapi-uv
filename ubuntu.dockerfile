@@ -4,12 +4,6 @@ FROM ubuntu:latest
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Install uv
-# apk add curl
-# curl -LsSf https://astral.sh/uv/install.sh | sh
-# source $HOME/.cargo/env
-# uv python install 3.12
-
 # Install Python
 RUN uv python install 3.12
 
@@ -21,7 +15,7 @@ COPY pyproject.toml /app/
 COPY uv.lock /app/
 
 # Install dependencies
-RUN uv version ; uv sync --locked --no-install-project
+RUN uv version ; uv sync --locked --no-dev --no-install-project
 
 # Copy the project into the image
 COPY ./src/ /app

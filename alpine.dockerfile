@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
-FROM python:3.12-slim
+FROM python:3.12-alpine
+
+# Security: fix CVE-2024-9143⁠
+RUN apk add --no-cache openssl=3.3.2-r1
 
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv

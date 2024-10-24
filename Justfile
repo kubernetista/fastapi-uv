@@ -8,12 +8,20 @@ set shell := ["zsh", "-l", "-cu"]
 # set script-interpreter := ['bash', '-eu']
 
 # Variables
-VAR_DOCKERFILE     := "slim.dockerfile"
 VAR_IMAGE_NAME     := "fastapi-uv"
-# VAR_IMAGE_TAG      := "latest"
-VAR_IMAGE_TAG      := "slim"
-
 VAR_CONTAINER_NAME := "fastapi-uv-container"
+
+# VAR_DOCKERFILE     := "Dockerfile"
+VAR_DOCKERFILE     := "alpine.dockerfile"
+# VAR_DOCKERFILE     := "ubuntu.dockerfile"
+
+VAR_BUILD_OPTS     := ""
+# VAR_BUILD_OPTS     := "--no-cache"
+
+# VAR_IMAGE_TAG      := "latest"
+# VAR_IMAGE_TAG      := "standard"
+VAR_IMAGE_TAG      := "alpine"
+# VAR_IMAGE_TAG      := "ubuntu"
 
 VAR_PORT           := "8001"
 VAR_PORT_DEV       := "8008"
@@ -108,7 +116,7 @@ code-package-build-publish:  code-package-build  code-package-publish
 # Build 📦 the container
 container-build:
     @echo -e "\n🚀 Building container\n"
-    docker build . -f slim.dockerfile -t {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}} --load
+    docker build {{VAR_BUILD_OPTS}} . -f {{VAR_DOCKERFILE}} -t {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}} --load
 
 # Start 🚀 the container
 container-start: container-build
