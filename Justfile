@@ -136,6 +136,11 @@ container-start: container-build
 
 alias start := container-start
 
+container-start-from-image:
+    @echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image ${JUST_IMAGE_NAME}"
+    docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 ${JUST_IMAGE_NAME}
+    @echo -e "\n🎁 Container available: 🔗 http://localhost:{{JUST_PORT}}"
+
 # Push 📦 the container to Docker registry
 container-push:
     @echo "📦 Pushing container to Docker registry"
