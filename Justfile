@@ -8,24 +8,24 @@ set shell := ["zsh", "-l", "-cu"]
 # set script-interpreter := ['bash', '-eu']
 
 # Variables
-VAR_IMAGE_NAME     := "fastapi-uv"
-VAR_CONTAINER_NAME := "fastapi-uv-container"
+JUST_IMAGE_NAME     := "fastapi-uv"
+JUST_CONTAINER_NAME := "fastapi-uv-container"
 
-# VAR_DOCKERFILE     := "Dockerfile"
-VAR_DOCKERFILE     := "alpine.dockerfile"
-# VAR_DOCKERFILE     := "ubuntu.dockerfile"
+# JUST_DOCKERFILE     := "Dockerfile"         # Python 3.12 image
+JUST_DOCKERFILE     := "alpine.dockerfile"    # Python 3.12 Alpine image
+# JUST_DOCKERFILE     := "ubuntu.dockerfile"  # Ubuntu:latest image
 
-VAR_BUILD_OPTS     := ""
-# VAR_BUILD_OPTS     := "--no-cache"
+JUST_BUILD_OPTS     := ""
+# JUST_BUILD_OPTS     := "--no-cache"
 
-# VAR_IMAGE_TAG      := "latest"
-# VAR_IMAGE_TAG      := "standard"
-VAR_IMAGE_TAG      := "alpine"
-# VAR_IMAGE_TAG      := "ubuntu"
+JUST_IMAGE_TAG      := "latest"
+# JUST_IMAGE_TAG      := "standard"
+# JUST_IMAGE_TAG      := "alpine"
+# JUST_IMAGE_TAG      := "ubuntu"
 
-VAR_PORT           := "8001"
-VAR_PORT_DEV       := "8008"
-VAR_PORT_DOC       := "8009"
+JUST_PORT           := "8001"
+JUST_PORT_DEV       := "8008"
+JUST_PORT_DOC       := "8009"
 
 # List 📜 all recipes (this!)
 help:
@@ -38,13 +38,13 @@ code-install:
     uv run pre-commit install
 
 # Run 🛠️ the app in development mode with reload ♻️  (alias: dev)
-code-run:
+code-run-dev:
     @/bin/echo -e "\n🚀 Running app in development mode (with reload)\n"
-    #@ uv run --with "fastapi[standard]" fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
-    uv run fastapi dev ./src/fastapi_uv/main.py --port {{VAR_PORT_DEV}}
-    @# @uv run uvicorn src.fastapi_uv.main:app --reload --port {{VAR_PORT_DEV}}
+    #@ uv run --with "fastapi[standard]" fastapi dev ./src/fastapi_uv/main.py --port {{JUST_PORT_DEV}}
+    uv run fastapi dev ./src/fastapi_uv/main.py --port {{JUST_PORT_DEV}}
+    @# @uv run uvicorn src.fastapi_uv.main:app --reload --port {{JUST_PORT_DEV}}
 
-alias dev := code-run
+alias dev := code-run-dev
 
 # Test 🧪 code and generate test Coverage report  (alias: test)
 code-test:
@@ -63,7 +63,7 @@ code-pre-commit-check:
     @echo "🚀 Running pre-commit checks"
     uv run pre-commit run --all-files
 
-# Run 🔎 code quality tools
+# Run 🔎 code quality tools  (alias: check)
 code-check:
     @echo -e "\n🚀 Checking lock file consistency with 'pyproject.toml'"
     uv lock --locked
@@ -75,6 +75,8 @@ code-check:
     uv run deptry ./src
     @echo -e "\n🚀 Running Pyright for type checking"
     uv run --with pyright pyright ./src
+
+alias check := code-check
 
 # Scan 🕵🏻‍♂️ the code for security issues using Bandit
 code-scan-bandit:
@@ -113,66 +115,72 @@ code-package-publish:
 code-package-build-publish:  code-package-build  code-package-publish
 
 ## Container recipes
-# Build 📦 the container
+# Build 📦 the container  (alias: build)
 container-build:
     @echo -e "\n🚀 Building container\n"
-    docker build {{VAR_BUILD_OPTS}} . -f {{VAR_DOCKERFILE}} -t {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}} --load
+    docker build {{JUST_BUILD_OPTS}} . -f {{JUST_DOCKERFILE}} -t {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}} --load
 
-# Start 🚀 the container
+alias build := container-build
+
+# Start 🚀 the container  (alias: start)
 container-start: container-build
-    @echo -e "\n🚀 Starting the container {{VAR_CONTAINER_NAME}}"
-    docker run --rm --name {{VAR_CONTAINER_NAME}} --detach -p {{VAR_PORT}}:8001 {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}}
-    @echo -e "\n🎁 Container available: 🔗 http://localhost:{{VAR_PORT}}"
+    @echo -e "\n🚀 Starting the container {{JUST_CONTAINER_NAME}}"
+    docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}}
+    @echo -e "\n🎁 Container available: 🔗 http://localhost:{{JUST_PORT}}"
+
+alias start := container-start
 
 # Push 📦 the container to Docker registry
 container-push:
     @echo "📦 Pushing container to Docker registry"
-    docker push {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}}
+    docker push {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}}
 
-# Stop 🛑 the running container
+# Stop 🛑 the running container  (alias: stop)
 container-stop:
     @echo -e "\n🛑 Stopping container"
-    -docker stop {{VAR_CONTAINER_NAME}}
+    -docker stop {{JUST_CONTAINER_NAME}}
     @echo -e "\n🗑️ Removing container"
-    -docker rm {{VAR_CONTAINER_NAME}}
+    -docker rm {{JUST_CONTAINER_NAME}}
+
+alias stop := container-stop
 
 # Shell into 🚪 the container
 container-shell:
     @echo -e "\n🚪 Connecting to container shell"
-    docker exec -it  {{VAR_CONTAINER_NAME}} /bin/bash
+    docker exec -it  {{JUST_CONTAINER_NAME}} /bin/bash
 
 # Remove 🗑️ the container
 container-remove:
     @echo -e "🗑️ Removing container\n"
-    docker rm {{VAR_CONTAINER_NAME}}
+    docker rm {{JUST_CONTAINER_NAME}}
 
 # Remove 🗑️ the Docker image
 container-image-remove:
     @echo -e "🗑️ Removing container image\n"
-    docker rmi {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}}
+    docker rmi {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}}
     @echo -e "\n🗑️ Container image removed"
 
 # View 📜 logs of the running container
 container-logs:
     @echo "📜 View logs of the running container"
-    docker logs {{VAR_CONTAINER_NAME}}
+    docker logs {{JUST_CONTAINER_NAME}}
 
 # View 📜 and follow 🍿 logs of the running container
 container-logs-f:
     @echo "📜 View and follow logs of the running container"
-    docker logs -f {{VAR_CONTAINER_NAME}}
+    docker logs -f {{JUST_CONTAINER_NAME}}
 
 # Scan 🕵🏻‍♂️  the container for vulnerabilities using Trivy 🎯
 container-scan-trivy: container-build
     @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Trivy 🎯\n"
-    # @trivy image {{VAR_IMAGE_NAME}}
-    # @trivy image --severity HIGH,CRITICAL {{VAR_IMAGE_NAME}}
-    trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}}
+    # @trivy image {{JUST_IMAGE_NAME}}
+    # @trivy image --severity HIGH,CRITICAL {{JUST_IMAGE_NAME}}
+    trivy image --severity MEDIUM,HIGH,CRITICAL --ignore-unfixed {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}}
 
 # Scan 🕵🏻‍♂️  the container for vulnerabilities using Grype 👾
 container-scan-grype: container-build
     @echo -e "\n🕵🏻‍♂️  Scanning container for vulnerabilities using Grype 👾\n"
-    grype --only-fixed {{VAR_IMAGE_NAME}}:{{VAR_IMAGE_TAG}}
+    grype --only-fixed {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}}
 
 
 ## Documentation recipes
@@ -182,5 +190,5 @@ docs-test:
 
 # Build 📚 and serve the documentation
 docs:
-    @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{VAR_PORT_DOC}}"
-    uv run mkdocs serve -a 127.0.0.1:{{VAR_PORT_DOC}}
+    @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
+    uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
