@@ -52,7 +52,7 @@
 # Dagger job that calls the build function from the local module
 build:
   extends: [.dagger]
-  stage: test
+  stage: build
   script:
     - dagger call build --src=.
     # for ephemeral runners only: override the default docker stop timeout and
@@ -61,7 +61,7 @@ build:
 
 push:
   extends: [.dagger]
-  stage: build
+  stage: push
   script:
     # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
     - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
