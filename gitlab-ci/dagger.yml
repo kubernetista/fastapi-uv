@@ -49,15 +49,15 @@
 #     # give the Dagger Engine more time to push cache data to Dagger Cloud
 #     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
-# # Dagger job that calls the build function from the local module
-# build:
-#   extends: [.dagger]
-#   stage: build
-#   script:
-#     - dagger call build --src=.
-#     # for ephemeral runners only: override the default docker stop timeout and
-#     # give the Dagger Engine more time to push cache data to Dagger Cloud
-#     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
+# Dagger job that calls the build function from the local module
+build:
+  extends: [.dagger]
+  stage: build
+  script:
+    - dagger call build --src=.
+    # for ephemeral runners only: override the default docker stop timeout and
+    # give the Dagger Engine more time to push cache data to Dagger Cloud
+    - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 
 push:
   extends: [.dagger]
