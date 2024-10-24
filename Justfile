@@ -14,7 +14,8 @@ JUST_REGISTRY:= "registry.gitlab.com"
 JUST_REG_USERNAME:= "acola"
 JUST_REG_PASSWORD:= "env:GITLAB_TOKEN"
 JUST_REG_PATH:= "acola/fastapi-uv"
-JUST_CONTAINER_TAG:= "$(git rev-parse --short=8 HEAD)"
+# JUST_CONTAINER_TAG:= "$(git rev-parse --short=8 HEAD)"
+JUST_CONTAINER_TAG:= "$(git describe --tags --abbrev=1)"
 JUST_CONTAINER_SRC:= "."
 
 # JUST_DOCKERFILE     := "Dockerfile"         # Python 3.12 image
@@ -136,12 +137,16 @@ container-start: container-build
 
 alias start := container-start
 
-# Usage: JUST_IMAGE_NAME=ghcr.io/username/app:latest just start-image
-# Start 🚀 the container from the image in the env variable JUST_IMAGE_NAME
-container-start-from-image:
-    @echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image ${JUST_IMAGE_NAME}"
-    docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 ${JUST_IMAGE_NAME}
-    @echo -e "\n🎁 Container available: 🔗 http://localhost:{{JUST_PORT}}"
+# Start 🚀 the container from the image (i.e: ghcr.io/username/app:latest)
+container-start-from-image $ARG_IMAGE_NAME:
+    #!/usr/bin/env bash
+    echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image:\n ➡️ {{ARG_IMAGE_NAME}}\n"
+    docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 {{ARG_IMAGE_NAME}}
+    if [[ $? -eq 125 ]]; then
+        echo -e "\n🚨 Error: container {{JUST_CONTAINER_NAME}} already exists. Fix:\n  just stop"
+    else
+        echo -e "\n🎁 Container available: 🔗 http://localhost:{{JUST_PORT}}"
+    fi
 
 alias start-image := container-start-from-image
 
@@ -208,7 +213,21 @@ docs:
     @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
     uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
 
-# Build and publish the container to the registry with Dagger 🗡️
-dagger-publish:
-    @echo "\n🗡️ Dagger publish\n"
-    dagger call publish --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
+# Build and push the container to the registry with Dagger 🗡️
+dagger-build:
+    @echo "\n🗡️ Dagger build\n"
+    dagger call build --src {{JUST_CONTAINER_SRC}}
+
+# Build and push the container to the registry with Dagger 🗡️
+dagger-build-push:
+    @echo "\n🗡️ Dagger build and push\n"
+    dagger call build-push --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
+
+shebang:
+    #!/usr/bin/env bash
+    echo "🚀 shebang"
+    read -p 'test? ' var
+    echo "💭 $var"
+
+arguments arg:
+    @echo "🚀 arguments: {{arg}}"
