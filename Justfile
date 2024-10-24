@@ -213,7 +213,7 @@ docs:
     @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
     uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
 
-# Build and push the container to the registry with Dagger 🗡️
+# Build the container with Dagger 🗡️
 dagger-build:
     @echo "\n🗡️ Dagger build\n"
     dagger call build --src {{JUST_CONTAINER_SRC}}
