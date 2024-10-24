@@ -5,9 +5,9 @@ stages:
   - test
   - build
   - push
-  - deploy
   - pre-deploy-check
-  - post-deploy-check
+  - deploy
+  - post-deploy-test
 
 include:
   # - local: "gitlab-ci/gitlab.yml"
