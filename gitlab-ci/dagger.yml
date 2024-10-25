@@ -28,7 +28,7 @@
 # prettier-ignore
 
 # Dagger job that calls the test function from the local module
-test:
+dagger-test:
   extends: [.dagger]
   stage: test
   script:
