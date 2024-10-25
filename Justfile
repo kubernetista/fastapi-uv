@@ -140,7 +140,7 @@ alias start := container-start
 # Start 🚀 the container from the image (i.e: ghcr.io/user/app:latest)
 container-start-from-image $ARG_IMAGE_NAME:
     #!/usr/bin/env bash
-    echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image:\n ➡️ {{ARG_IMAGE_NAME}}\n"
+    echo -e "\n🚀 Starting {{JUST_CONTAINER_NAME}} from image:\n➡️ {{ARG_IMAGE_NAME}}\n"
     docker run --rm --name {{JUST_CONTAINER_NAME}} --detach -p {{JUST_PORT}}:8001 {{ARG_IMAGE_NAME}}
     if [[ $? -eq 125 ]]; then
         echo -e "\n🚨 Error: container {{JUST_CONTAINER_NAME}} already exists. Fix:\n  just stop"
