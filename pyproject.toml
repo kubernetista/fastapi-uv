@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-uv"
-version = "0.0.1"
+version = "0.3.2"
 description = "This is a template repository for Python projects that use uv for their dependency management."
 authors = [{ name = "AC", email = "ac@kubernetista.io" }]
 readme = "README.md"
@@ -15,10 +15,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
- "fastapi[standard]>=0.115.3",
- "uvicorn>=0.31.1",
-]
+dependencies = ["fastapi[standard]>=0.115.3", "uvicorn>=0.31.1"]
 
 [project.urls]
 Homepage = "https://acola.github.io/fastapi-uv/"
