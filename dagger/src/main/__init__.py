@@ -10,22 +10,7 @@
 from typing import Annotated
 
 import dagger
-from dagger import DaggerError, Doc, dag, field, function, object_type
-
-SCRIPT = """#!/bin/sh
-echo "Test Suite"
-echo "=========="
-echo "Test 1: PASS" >> report.txt
-echo "Test 2: FAIL" >> report.txt
-echo "Test 3: PASS" >> report.txt
-exit 0
-"""
-
-
-@object_type
-class TestResult:
-    report: dagger.File = field()
-    exit_code: str = field()
+from dagger import DaggerError, Doc, dag, function, object_type
 
 
 @object_type
@@ -77,21 +62,20 @@ class FastapiUv:
             dagger.Directory,
             Doc("root directory of the project"),
         ],
-    ) -> TestResult:
+    ) -> dagger.File:
+        # ) -> TestResult:
         """Handle errors"""
         try:
             ctr = await (
                 dag.container()
-                # .from_("python:3.12-alpine")
                 .from_("python:3.12")
-                # .with_exec(["sh", "-c", "apk add --no-cache curl bash"])
                 # .with_exec(["sh", "-c", "apt-get update && apt-get install -y curl bash"])
                 .with_exec([
                     "sh",
                     "-c",
                     "curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR='/usr/local' sh",
                 ])
-                .with_directory("/src", src)
+                .with_directory("/src", src, exclude=[".venv/"])
                 .with_workdir("/src")
                 # add script with execution permission to simulate a testing tool.
                 # .with_new_file("run-tests", SCRIPT, permissions=0o750)
@@ -99,7 +83,6 @@ class FastapiUv:
                 # .terminal("/bin/bash")
                 # .exec(["/usr/bin/bash"])
                 # .terminal(["/usr/bin/bash"])
-                # if the exit code isn't needed: "run-tests; true"
                 .with_exec(["bash", "-c", "uv lock --locked"])
                 .with_exec(["bash", "-c", "uv run pre-commit run --all-files"])
                 .with_exec(["bash", "-c", "uv run mypy ./src"])
@@ -109,13 +92,9 @@ class FastapiUv:
                 .sync()
             )
 
-            # save report for inspection.
-            report = ctr.file("report.txt")
+            # return "Test completed"
+            return await ctr
 
-            # use the saved exit code to determine if the tests passed.
-            exit_code = await ctr.file("exit_code").contents()
-
-            return TestResult(report=report, exit_code=exit_code)
         except DaggerError as e:
             # DaggerError is the base class for all errors raised by Dagger
             msg = "Unexpected Dagger error"
