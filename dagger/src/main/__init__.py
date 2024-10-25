@@ -63,13 +63,11 @@ class FastapiUv:
             Doc("root directory of the project"),
         ],
     ) -> str:
-        # ) -> TestResult:
-        """Handle errors"""
+        """Test a python project with uv, pre-commit, etc"""
         try:
             await (
                 dag.container()
                 .from_("python:3.12")
-                # .with_exec(["sh", "-c", "apt-get update && apt-get install -y curl bash"])
                 .with_exec([
                     "sh",
                     "-c",
@@ -77,18 +75,11 @@ class FastapiUv:
                 ])
                 .with_directory("/src", src, exclude=[".venv/"])
                 .with_workdir("/src")
-                # add script with execution permission to simulate a testing tool.
-                # .with_new_file("run-tests", SCRIPT, permissions=0o750)
-                # .terminal()
-                .terminal(cmd=["/bin/bash"])
-                # .terminal("/bin/bash")
-                # .exec(["/usr/bin/bash"])
-                # .terminal(["/usr/bin/bash"])
-                .with_exec(["bash", "-c", "uv lock --locked"])
-                .with_exec(["bash", "-c", "uv run pre-commit run --all-files"])
-                .with_exec(["bash", "-c", "uv run mypy ./src"])
-                .with_exec(["bash", "-c", "uv run deptry ./src"])
-                .with_exec(["bash", "-c", "uv run --with pyright pyright ./src"])
+                .with_exec(["sh", "-c", "uv lock --locked"])
+                .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
+                .with_exec(["sh", "-c", "uv run mypy ./src"])
+                .with_exec(["sh", "-c", "uv run deptry ./src"])
+                .with_exec(["sh", "-c", "uv run --with pyright pyright ./src"])
                 # the result of `sync` is the container, which allows continued chaining
                 .sync()
             )
