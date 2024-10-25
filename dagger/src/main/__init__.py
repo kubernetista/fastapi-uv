@@ -73,7 +73,7 @@ class FastapiUv:
                     "-c",
                     "curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR='/usr/local' sh",
                 ])
-                .with_directory("/src", src, exclude=[".venv/"])
+                .with_directory("/src", src, exclude=[".venv/", ".mypy_cache/", "dist/", ".tox/"])
                 .with_workdir("/src")
                 .with_exec(["sh", "-c", "uv lock --locked"])
                 .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
