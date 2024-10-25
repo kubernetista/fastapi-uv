@@ -80,6 +80,7 @@ class FastapiUv:
                 # add script with execution permission to simulate a testing tool.
                 # .with_new_file("run-tests", SCRIPT, permissions=0o750)
                 # .terminal()
+                .terminal(cmd=["/bin/bash"])
                 # .terminal("/bin/bash")
                 # .exec(["/usr/bin/bash"])
                 # .terminal(["/usr/bin/bash"])
@@ -97,24 +98,3 @@ class FastapiUv:
             raise RuntimeError(msg) from e
         else:
             return "Test completed successfully"
-
-    @function
-    async def test_test(
-        self,
-        src: Annotated[
-            dagger.Directory,
-            Doc("location of directory containing Dockerfile"),
-        ],
-    ) -> str:
-        """Test function"""
-        ref = (
-            dag.container()
-            .with_directory(".", src)
-            .with_workdir("/")
-            .directory(".")
-            .docker_build()  # build from Dockerfile
-        )
-        return await ref
-
-
-# ruff: noqa: RET505
