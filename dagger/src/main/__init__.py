@@ -62,11 +62,11 @@ class FastapiUv:
             dagger.Directory,
             Doc("root directory of the project"),
         ],
-    ) -> dagger.File:
+    ) -> str:
         # ) -> TestResult:
         """Handle errors"""
         try:
-            ctr = await (
+            await (
                 dag.container()
                 .from_("python:3.12")
                 # .with_exec(["sh", "-c", "apt-get update && apt-get install -y curl bash"])
@@ -91,14 +91,12 @@ class FastapiUv:
                 # the result of `sync` is the container, which allows continued chaining
                 .sync()
             )
-
-            # return "Test completed"
-            return await ctr
-
         except DaggerError as e:
             # DaggerError is the base class for all errors raised by Dagger
             msg = "Unexpected Dagger error"
             raise RuntimeError(msg) from e
+        else:
+            return "Test completed successfully"
 
     @function
     async def test_test(
