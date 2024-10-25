@@ -27,8 +27,8 @@
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 # prettier-ignore
 
-# Dagger job that calls the build function from the local module
-build:
+# Dagger job that calls the test function from the local module
+test:
   extends: [.dagger]
   stage: test
   script:
