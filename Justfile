@@ -213,12 +213,12 @@ docs:
     @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
     uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
 
-# Build the container with Dagger 🗡️
+# 🗡️ Build the container with Dagger
 dagger-build:
     @echo "\n🗡️ Dagger build\n"
     dagger call build --src {{JUST_CONTAINER_SRC}}
 
-# Build and push the container to the registry with Dagger 🗡️
+# 🗡️ Build and push the container to the registry with Dagger
 dagger-build-push:
     @echo "\n🗡️ Dagger build and push\n"
     dagger call build-push --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
