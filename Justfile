@@ -126,6 +126,7 @@ code-bump-version:
     @echo -e "🚀 Updating app version in pyproject.toml\n"
     uv run -q --with tomli_w ./scripts/update_version.py
     uv lock
+    git add pyproject.toml uv.lock && git commit -m "Bump version"
 
 alias bump := code-bump-version
 
