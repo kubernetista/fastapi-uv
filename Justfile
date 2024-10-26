@@ -236,3 +236,8 @@ dagger-build:
 dagger-build-push:
     @echo "\n🗡️ Dagger build and push\n"
     dagger call build-push --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
+
+# 🗡️ Test the container with Dagger 🧪
+dagger-test:
+    @echo "\n🗡️ Dagger test 🧪\n"
+    dagger call test --src {{JUST_CONTAINER_SRC}}
