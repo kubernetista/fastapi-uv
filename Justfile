@@ -122,9 +122,11 @@ code-package-publish:
 code-package-build-publish:  code-package-build  code-package-publish
 
 # 🏷️ Update app version in pyproject.toml
-code-update-version:
+code-bump-version:
     @echo -e "🚀 Updating app version in pyproject.toml\n"
     uv run -q --with tomli_w ./scripts/update_version.py
+
+alias bump := code-bump-version
 
 # 🎯 Test the app connecting to the the API with a curl GET
 code-app-test:
