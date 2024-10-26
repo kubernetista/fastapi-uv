@@ -121,6 +121,11 @@ code-package-publish:
 # Build 📦 and publish 📰
 code-package-build-publish:  code-package-build  code-package-publish
 
+# 🏷️ Update app version in pyproject.toml
+code-update-version:
+    @echo -e "🚀 Updating app version in pyproject.toml\n"
+    uv run -q --with tomli_w ./scripts/update_version.py
+
 ## Container recipes
 # Build 📦 the container  (alias: build)
 container-build *build-options:
