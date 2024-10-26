@@ -123,9 +123,9 @@ code-package-build-publish:  code-package-build  code-package-publish
 
 ## Container recipes
 # Build 📦 the container  (alias: build)
-container-build:
+container-build *build-options:
     @echo -e "\n🚀 Building container\n"
-    docker build {{JUST_BUILD_OPTS}} . -f {{JUST_DOCKERFILE}} -t {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}} --load
+    docker build {{JUST_BUILD_OPTS}} {{build-options}} . -f {{JUST_DOCKERFILE}} -t {{JUST_IMAGE_NAME}}:{{JUST_IMAGE_TAG}} --load
 
 alias build := container-build
 
