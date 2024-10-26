@@ -1,5 +1,6 @@
 import re
 import subprocess
+from typing import Optional
 
 import tomli
 import tomli_w
@@ -26,8 +27,8 @@ def get_git_version() -> str:
         return pep440_version
 
 
-def update_pyproject_version(version: str, filepath="pyproject.toml"):
-    """Update the version in pyproject.toml."""
+def update_pyproject_version(version: str, filepath: str = "pyproject.toml") -> Optional[str]:
+    """Update the version in pyproject.toml and stage the file."""
     with open(filepath, "rb") as f:
         pyproject_data = tomli.load(f)
 
@@ -38,6 +39,12 @@ def update_pyproject_version(version: str, filepath="pyproject.toml"):
         tomli_w.dump(pyproject_data, f)
 
     print(f"Updated pyproject.toml with version: {version}")
+
+    # # Stage pyproject.toml to prevent pre-commit from stashing it
+    # subprocess.run(["git", "add", filepath], check=True)
+    # print(f"Updated and staged pyproject.toml with version: {version}")
+
+    return None
 
 
 if __name__ == "__main__":
