@@ -1,10 +1,13 @@
 [project]
 name = "fastapi-uv"
-version = "0.3.2+25.gffb1"
+version = "0.3.3+1.g424e"
 description = "This is a template repository for Python projects that use uv for their dependency management."
-authors = [{ name = "AC", email = "ac@kubernetista.io" }]
-# readme = "README.md"
-keywords = ["python"]
+authors = [
+    { name = "AC", email = "ac@kubernetista.io" },
+]
+keywords = [
+    "python",
+]
 requires-python = ">=3.11,<4.0"
 classifiers = [
     "Intended Audience :: Developers",
@@ -48,7 +51,9 @@ cache-keys = [
 cache-dir = ".cache"
 
 [tool.mypy]
-files = ["src/fastapi_uv"]
+files = [
+    "src/fastapi_uv",
+]
 disallow_untyped_defs = true
 disallow_any_unimported = true
 no_implicit_optional = true
@@ -58,7 +63,9 @@ warn_unused_ignores = true
 show_error_codes = true
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = [
+    "tests",
+]
 
 [tool.ruff]
 target-version = "py39"
@@ -84,10 +91,15 @@ select = [
     "RUF",
     "TRY",
 ]
-ignore = ["E501", "E731"]
+ignore = [
+    "E501",
+    "E731",
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]
+"tests/*" = [
+    "S101",
+]
 
 [tool.ruff.format]
 preview = true
@@ -97,11 +109,15 @@ skip_empty = true
 
 [tool.coverage.run]
 branch = true
-source = ["fastapi_uv"]
+source = [
+    "fastapi_uv",
+]
 
 [tool.hatch.envs.default]
 installer = "uv"
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
