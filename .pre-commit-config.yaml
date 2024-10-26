@@ -1,4 +1,16 @@
+fail_fast: true
 repos:
+  # - repo: local
+  #   hooks:
+  #     - id: update-version
+  #       name: Update Version in pyproject.toml
+  #       entry: uv run -q --with "tomli,tomli_w" python ./scripts/update_version.py
+  #       language: system  # Allows system-level access to manage file changes
+  #       stages: [pre-commit] # Run only on commit, to avoid running on every file change
+  #       pass_filenames: false  # Prevents passing specific file names
+  #       always_run: true  # Ensures it always runs during commit
+  #       args: ["--all-files"]  # Ensures the hook applies to the entire project
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: "v5.0.0"
     hooks:
@@ -13,8 +25,10 @@ repos:
     rev: "v0.7.0"
     hooks:
       - id: ruff
-        args: [--exit-non-zero-on-fix]
+        # args: [--exit-non-zero-on-fix]
+        args: [--diff] # Run in check-only mode, reporting issues without fixing
       - id: ruff-format
+        stages: [manual] # Make ruff-format run only manually, not during commit checks
 
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v3.1.0"
