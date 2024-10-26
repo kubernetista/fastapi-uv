@@ -126,6 +126,13 @@ code-update-version:
     @echo -e "🚀 Updating app version in pyproject.toml\n"
     uv run -q --with tomli_w ./scripts/update_version.py
 
+# 🎯 Test the app connecting to the the API with a curl GET
+code-app-test:
+    @echo -e "\n🚀 Testing the app connecting to the the API\n"
+    curl -s http://localhost:{{JUST_PORT}} | jq
+
+alias app-test := code-app-test
+
 ## Container recipes
 # Build 📦 the container  (alias: build)
 container-build *build-options:
