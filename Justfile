@@ -60,9 +60,9 @@ code-test:
 
 alias test := code-test
 
-# Upgrade 🎈 dependencies
-code-upgrade-dependencies:
-    @echo "🚀 Upgrading dependencies"
+# Upgrade 🎈 Python packages
+code-upgrade-packages:
+    @echo "🚀 Upgrading Python packages with UV"
     uv sync --upgrade
 
 # Run 🔎 pre-commit checks
