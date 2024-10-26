@@ -125,6 +125,7 @@ code-package-build-publish:  code-package-build  code-package-publish
 code-bump-version:
     @echo -e "🚀 Updating app version in pyproject.toml\n"
     uv run -q --with tomli_w ./scripts/update_version.py
+    uv lock
 
 alias bump := code-bump-version
 
