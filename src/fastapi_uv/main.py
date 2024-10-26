@@ -27,7 +27,6 @@ metadata = StandardMetadata.from_pyproject(
 #         # Handle the cancellation gracefully
 #         pass
 
-
 @app.get("/")
 def get_root() -> dict[str, str]:
     return {
@@ -35,7 +34,6 @@ def get_root() -> dict[str, str]:
         "app-name": metadata.name,
         "version": str(metadata.version),
     }
-
 
 if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")  # noqa: S104  # nosec B104
