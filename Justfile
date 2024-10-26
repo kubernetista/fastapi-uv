@@ -124,7 +124,7 @@ code-package-build-publish:  code-package-build  code-package-publish
 
 # 🏷️ Update app version in pyproject.toml
 code-bump-version:
-    @echo -e "🚀 Updating app version in pyproject.toml\n"
+    @echo -e "\n🚀 Updating app version in pyproject.toml\n"
     uv run -q --with tomli_w ./scripts/update_version.py
     uv lock
     git add pyproject.toml uv.lock
@@ -132,12 +132,12 @@ code-bump-version:
 
 alias bump := code-bump-version
 
-# 🎯 Test the app connecting to the the API with a curl GET
-code-app-test:
-    @echo -e "\n🚀 Testing the app connecting to the the API\n"
+# 🎯 Test the app with a curl GET to the API
+code-app-get:
+    @echo -e "\n🚀 Testing the app with a curl GET to the API\n"
     curl -s http://localhost:{{JUST_PORT}} | jq
 
-alias app-test := code-app-test
+alias get := code-app-get
 
 ## Container recipes
 # Build 📦 the container  (alias: build)
@@ -245,3 +245,13 @@ dagger-build-push:
 dagger-test:
     @echo "\n🗡️ Dagger test 🧪\n"
     dagger call test --src {{JUST_CONTAINER_SRC}}
+
+# 🗡️ Full Dagger CI: Test, Build, Push
+dagger-ci:
+    @echo "\n🗡️ Full Dagger CI: Lint, Test, Bump, Build, Push\n"
+    @just code-pre-commit-check
+    @just dagger-test
+    @just code-bump-version
+    @just dagger-build-push
+
+alias ci := dagger-ci
