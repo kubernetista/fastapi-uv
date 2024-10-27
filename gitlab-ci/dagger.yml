@@ -33,6 +33,7 @@ dagger-test:
   extends: [.dagger]
   stage: test
   script:
+    - git describe --tags --abbrev=7 --always
     - dagger call test --src=.
     # for ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
@@ -47,8 +48,8 @@ dagger-build-push:
     - pwd
     - ls -la .
     # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
+    - git describe --tags --abbrev=7 --always
     - export IMAGE_TAG=$(git describe --tags --abbrev=7)
-    - git describe --tags --abbrev=7
     - echo dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     - dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     # - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "" --tag "$CI_COMMIT_SHORT_SHA"
