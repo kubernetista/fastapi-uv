@@ -6,6 +6,7 @@ variables:
   DOCKER_DRIVER: overlay2
   # Disable TLS verification to simplify the setup with Docker-in-Docker
   DOCKER_TLS_CERTDIR: ""
+  GIT_FETCH_EXTRA_FLAGS: --prune --quiet --tags
 
 # # Job to run the tests and generates a coverage report
 # test:
