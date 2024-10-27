@@ -63,12 +63,12 @@ alias test := code-test
 
 # Upgrade 🎈 Python packages
 code-upgrade-packages:
-    @echo "🚀 Upgrading Python packages with UV"
+    @echo "\n🚀 Upgrading Python packages with UV\n"
     uv sync --upgrade
 
 # Run 🔎 pre-commit checks
 code-pre-commit-check:
-    @echo "🚀 Running pre-commit checks"
+    @echo "\n🚀 Running pre-commit checks\n"
     uv run pre-commit run --all-files
 
 # Run 🔎 code quality tools  (alias: check)
@@ -248,7 +248,9 @@ dagger-test:
 
 # 🗡️ Full Dagger CI: Test, Build, Push
 dagger-ci:
-    @echo "\n🗡️ Full Dagger CI: Lint, Test, Bump, Build, Push\n"
+    @echo "\n🗡️ Full Dagger CI 🤖: Lint, Test, Bump, Build, Push\n"
+    @if [[ -z "${GITLAB_TOKEN}" ]]; then echo "GITLAB_TOKEN is not set"; exit 1; fi
+    uv lock --no-progress
     @just code-pre-commit-check
     @just dagger-test
     @just code-bump-version
