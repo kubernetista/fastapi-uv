@@ -6,7 +6,7 @@
   services:
     - docker:${DOCKER_VERSION}-dind
   variables:
-    GIT_FETCH_EXTRA_FLAGS: --prune --quiet --tags
+    GIT_FETCH_EXTRA_FLAGS: --prune --quiet --tags --depth=100
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_VERIFY: "1"
     DOCKER_TLS_CERTDIR: "/certs"
