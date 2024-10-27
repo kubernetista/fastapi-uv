@@ -15,6 +15,44 @@ from dagger import DaggerError, Doc, dag, function, object_type
 
 @object_type
 class FastapiUv:
+    # dagger call test --src .
+    @function
+    async def test(
+        self,
+        src: Annotated[
+            dagger.Directory,
+            Doc("root directory of the project"),
+        ],
+    ) -> str:
+        """Test a python project with uv, pre-commit, etc"""
+
+        try:
+            await (
+                dag.container()
+                .from_("python:3.12")
+                .with_exec([
+                    "sh",
+                    "-c",
+                    "curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR='/usr/local' sh",
+                ])
+                .with_directory("/src", src, exclude=[".venv/", ".mypy_cache/", "dist/", ".tox/"])
+                .with_workdir("/src")
+                # .with_exec(["sh", "-c", "uv lock --locked"])
+                .with_exec(["sh", "-c", "uv lock --frozen"])
+                .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
+                .with_exec(["sh", "-c", "uv run mypy ./src"])
+                .with_exec(["sh", "-c", "uv run deptry ./src"])
+                .with_exec(["sh", "-c", "uv run --with pyright pyright ./src"])
+                # the result of `sync` is the container, which allows continued chaining
+                .sync()
+            )
+        except DaggerError as e:
+            # DaggerError is the base class for all errors raised by Dagger
+            msg = "Unexpected Dagger error"
+            raise RuntimeError(msg) from e
+        else:
+            return "Test completed successfully"
+
     # dagger call build --src .
     @function
     async def build(
@@ -57,40 +95,3 @@ class FastapiUv:
         container = await self.build(src)
         image_name = f"{registry}/{path}/{image}:{tag}"
         return await container.with_registry_auth(registry, username, password).publish(image_name)
-
-    # dagger call test --src .
-    @function
-    async def test(
-        self,
-        src: Annotated[
-            dagger.Directory,
-            Doc("root directory of the project"),
-        ],
-    ) -> str:
-        """Test a python project with uv, pre-commit, etc"""
-
-        try:
-            await (
-                dag.container()
-                .from_("python:3.12")
-                .with_exec([
-                    "sh",
-                    "-c",
-                    "curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR='/usr/local' sh",
-                ])
-                .with_directory("/src", src, exclude=[".venv/", ".mypy_cache/", "dist/", ".tox/"])
-                .with_workdir("/src")
-                .with_exec(["sh", "-c", "uv lock --locked"])
-                .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
-                .with_exec(["sh", "-c", "uv run mypy ./src"])
-                .with_exec(["sh", "-c", "uv run deptry ./src"])
-                .with_exec(["sh", "-c", "uv run --with pyright pyright ./src"])
-                # the result of `sync` is the container, which allows continued chaining
-                .sync()
-            )
-        except DaggerError as e:
-            # DaggerError is the base class for all errors raised by Dagger
-            msg = "Unexpected Dagger error"
-            raise RuntimeError(msg) from e
-        else:
-            return "Test completed successfully"
