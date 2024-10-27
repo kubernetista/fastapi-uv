@@ -293,7 +293,7 @@ standard = [
 
 [[package]]
 name = "fastapi-uv"
-version = "0.3.3+38.g7d66"
+version = "0.3.3+39.g5b2c"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
