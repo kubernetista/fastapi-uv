@@ -1,6 +1,6 @@
 [project]
 name = "fastapi-uv"
-version = "0.3.3+29.gf3a5"
+version = "0.3.3+30.g8060"
 description = "This is a template repository for Python projects that use uv for their dependency management."
 authors = [
     { name = "AC", email = "ac@kubernetista.io" },
