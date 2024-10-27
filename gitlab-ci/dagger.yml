@@ -49,7 +49,7 @@ dagger-build-push:
     - ls -la .
     # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
     - git describe --tags --abbrev=7 --always
-    - export IMAGE_TAG=$(git describe --tags --abbrev=7)
+    - export IMAGE_TAG=$(git describe --tags --abbrev=7 --always)
     - echo dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     - dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     # - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "" --tag "$CI_COMMIT_SHORT_SHA"
