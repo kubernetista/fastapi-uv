@@ -6,6 +6,15 @@
 # Doc
 docs/source
 
+# Stuff I know little about
+/.scannerwork
+/sonar-project.properties
+/.dccache
+/.grype.yaml
+
+# Temporarily Ignored Files
+/.github/workflows/container-build.yml
+
 
 # From https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore
 
