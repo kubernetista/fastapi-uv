@@ -124,7 +124,7 @@ code-package-build-publish:  code-package-build  code-package-publish
 
 # 🏷️ Update app version in pyproject.toml
 code-bump-version:
-    @echo -e "\n🚀 Updating app version in pyproject.toml\n"
+    @echo -e "\n🔨 Bumping app version in pyproject.toml and git commit\n"
     uv run -q --with tomli_w ./scripts/update_version.py
     uv lock
     git add pyproject.toml uv.lock
@@ -246,9 +246,14 @@ dagger-test:
     @echo "\n🗡️ Dagger test 🧪\n"
     dagger call test --src {{JUST_CONTAINER_SRC}}
 
+# 🚧 Test, Build, Push the container with Dagger 🚧
+# dagger-test-build-push:
+#     @echo "\n🗡️ Dagger Test, Build, Push 🧪🧱🚀\n"
+#     dagger call test --src {{JUST_CONTAINER_SRC}} build-push --src {{JUST_CONTAINER_SRC}} --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}}
+
 # 🗡️ Full Dagger CI: Test, Build, Push
 dagger-ci:
-    @echo "\n🗡️ Full Dagger CI 🤖: Lint, Test, Build, Push\n"
+    @echo "\n🗡️ Full Dagger CI 🤖: Lint, Test, Bump, Build, Push\n"
     @echo "✅ Building version: {{JUST_CONTAINER_TAG}}\n"
     @if [[ -z "${GITLAB_TOKEN}" ]]; then echo "GITLAB_TOKEN is not set"; exit 1; fi
     uv lock --no-progress
