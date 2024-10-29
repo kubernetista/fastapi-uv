@@ -95,3 +95,20 @@ class FastapiUv:
         container = await self.build(src)
         image_name = f"{registry}/{path}/{image}:{tag}"
         return await container.with_registry_auth(registry, username, password).publish(image_name)
+
+    @function
+    async def test_publish_local(
+        self,
+        registry: Annotated[str, Doc("Registry address")] = "localhost:5000",
+    ) -> str:
+        """Publish a container image to a private registry"""
+        container = (
+            dag.container()
+            .from_("nginx:alpine")
+            .with_new_file(
+                "/usr/share/nginx/html/index.html",
+                "Hello from Dagger!",
+                permissions=0o400,
+            )
+        )
+        return await container.publish(f"{registry}/aruba-demo/my-nginx:dagger")
