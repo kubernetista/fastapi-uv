@@ -293,7 +293,7 @@ standard = [
 
 [[package]]
 name = "fastapi-uv"
-version = "0.3.3+40.g55f5"
+version = "0.3.3+45.g02a9"
 source = { editable = "." }
 dependencies = [
     { name = "fastapi", extra = ["standard"] },
@@ -302,7 +302,7 @@ dependencies = [
     { name = "uvicorn" },
 ]
 
-[package.dependency-groups]
+[package.dev-dependencies]
 dev = [
     { name = "deptry" },
     { name = "mkdocs" },
@@ -325,7 +325,7 @@ requires-dist = [
     { name = "uvicorn", specifier = ">=0.31.1" },
 ]
 
-[package.metadata.dependency-groups]
+[package.metadata.requires-dev]
 dev = [
     { name = "deptry", specifier = ">=0.20.0" },
     { name = "mkdocs", specifier = ">=1.4.2" },
