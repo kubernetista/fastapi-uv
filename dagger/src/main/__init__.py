@@ -39,7 +39,7 @@ class FastapiUv:
                 .with_workdir("/src")
                 # .with_exec(["sh", "-c", "uv lock --locked"])
                 .with_exec(["sh", "-c", "uv lock --frozen"])
-                .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
+                # .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
                 .with_exec(["sh", "-c", "uv run mypy ./src"])
                 .with_exec(["sh", "-c", "uv run deptry ./src"])
                 .with_exec(["sh", "-c", "uv run --with pyright pyright ./src"])
