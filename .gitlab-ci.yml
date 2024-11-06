@@ -10,6 +10,6 @@ stages:
   - post-deploy-test
 
 include:
-  - local: "gitlab-ci/gitlab.yml"
-  # - local: "gitlab-ci/dagger.yml"
+  # - local: "gitlab-ci/gitlab.yml"
+  - local: "gitlab-ci/dagger.yml"
   # - local: "gitlab-ci/deploy.yml"
