@@ -232,6 +232,11 @@ docs:
     @echo "📚 Serving documentation on 🔗 http://127.0.0.1:{{JUST_PORT_DOC}}"
     uv run mkdocs serve -a 127.0.0.1:{{JUST_PORT_DOC}}
 
+# 🗡️ Dagger Test pushing to local registry with Dagger
+dagger-test-push-local:
+    @echo "\n🗡️ Dagger Test pushing to local registry\n"
+    dagger call test-publish-local --registry=git.localtest.me
+
 # 🗡️ Build the container with Dagger
 dagger-build:
     @echo "\n🗡️ Dagger build\n"
