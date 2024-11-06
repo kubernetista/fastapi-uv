@@ -16,7 +16,8 @@ JUST_REG_PASSWORD:= "env:GITLAB_TOKEN"
 JUST_REG_PATH:= "acola/fastapi-uv"
 # JUST_CONTAINER_TAG:= "$(git rev-parse --short=8 HEAD)"
 # JUST_CONTAINER_TAG:= "$(git describe --tags --abbrev=4)"
-JUST_CONTAINER_TAG:= "$(git describe --tags --abbrev=4 HEAD~ --always)"
+# JUST_CONTAINER_TAG:= "$(git describe --tags --abbrev=4 HEAD~ --always)"
+JUST_CONTAINER_TAG:= "$(git describe --tags --abbrev=4 HEAD --always)"
 JUST_CONTAINER_SRC:= "."
 
 # JUST_DOCKERFILE     := "Dockerfile"         # Python 3.12 image
