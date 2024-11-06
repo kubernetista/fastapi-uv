@@ -30,12 +30,12 @@ metadata = StandardMetadata.from_pyproject(
 
 @app.get("/")
 def get_root() -> dict[str, str]:
-    # return {"message": "OK"}
-    return {
-        "status": "OK",
-        "app-name": metadata.name,
-        "version": str(metadata.version),
-    }
+    return {"message": "OK"}
+    # return {
+    #     "status": "OK",
+    #     "app-name": metadata.name,
+    #     "version": str(metadata.version),
+    # }
 
 
 if __name__ == "__main__":
