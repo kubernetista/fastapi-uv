@@ -269,3 +269,7 @@ dagger-ci:
     @just dagger-build-push
 
 alias ci := dagger-ci
+
+# Push the git repo to the local remote, creating the repository if it doesn't exist
+git-push-local:
+    git push -o repo.private=false -u local main
