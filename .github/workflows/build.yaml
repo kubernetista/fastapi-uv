@@ -54,8 +54,8 @@ jobs:
       - name: Get image tag and store it in an environment variable
         id: vars
         run: |
-          echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\//-/g"
-          IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\//-/g")
+          echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///"
+          IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
           export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
