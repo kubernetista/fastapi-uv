@@ -53,7 +53,12 @@ build:
 
     ## (already pushed in the build step above) Push the image to the registry
     # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - docker build -t "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}" . --push
+    - |
+      docker build \
+       -t "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}" \
+       -t "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${IMAGE_TAG}" \
+       . \
+       --push
 
 # Job to test the Docker container after it has been built
 container-test:
