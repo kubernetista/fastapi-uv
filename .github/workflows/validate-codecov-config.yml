@@ -1,10 +1,11 @@
 name: validate-codecov-config
 
 on:
-  pull_request:
-    paths: [codecov.yaml]
-  push:
-    branches: [main]
+  # pull_request:
+  #   paths: [codecov.yaml]
+  # push:
+  #   branches: [main]
+  workflow_dispatch:
 
 jobs:
   validate-codecov-config:
