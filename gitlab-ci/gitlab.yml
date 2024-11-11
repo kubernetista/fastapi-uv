@@ -46,7 +46,7 @@ build:
     # CI_PROJECT_NAMESPACE
     # CI_REGISTRY : registry.gitlab.example.com
     # CI_REGISTRY_IMAGE : registry.gitlab.example.com/my_group/my_project
-    - export IMAGE_TAG="$(git describe --tags --abbrev=7 --always)"
+    - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
     - echo "IMAGE_TAG = ${IMAGE_TAG}"
 
     # - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" . --push
