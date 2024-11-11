@@ -85,6 +85,7 @@ jobs:
 
           echo "Repository: ${{ gitea.repository }}"
           echo "Repository Owner: ${{ gitea.repository_owner }}"
+          echo "GITHUB_REPOSITORY_OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}""
           echo
 
           echo "Branch/Tag: ${{ gitea.ref_name }}"
@@ -107,11 +108,12 @@ jobs:
           echo "Workflow event name: ${{ gitea.event_name }}"
           echo
 
-          #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
+          echo "1: ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "2: ${{ env.REGISTRY_GITEA }}/${{ env.GITHUB_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
 
-      - name: Docker info
-        run: |
-          docker info
+      # - name: Docker info
+      #   run: |
+      #     docker info
 
       # - name: Pause to inspect the ACT Container
       #   run: |
@@ -135,7 +137,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGISTRY_GITEA }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
+          tags: ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           # tags: ${{ env.REGISTRY_GITEA }}/${{ env.GITHUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
       - name: Build and push
