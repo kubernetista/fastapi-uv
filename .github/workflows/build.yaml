@@ -81,38 +81,38 @@ jobs:
           echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
           echo "token: ${{ gitea.token }}"
           echo
-          echo "\n    Full dump of ENV variables :\n"
+          echo -e "\n    Full dump of ENV variables :\n"
           env | sort
 
       - name: Print environment variables
         run: |
           echo
 
-          # echo "Repository: ${{ gitea.repository }}"
-          # echo "Repository Owner: ${{ gitea.repository_owner }}"
-          # echo
+          echo "Repository: ${{ gitea.repository }}"
+          echo "Repository Owner: ${{ gitea.repository_owner }}"
+          echo
 
-          # echo "Branch/Tag: ${{ gitea.ref_name }}"
-          # echo "Branch/Tag (full): ${{ gitea.ref }}"
-          # echo "Ref Type: ${{ gitea.ref_type }}"
-          # echo "Commit SHA: ${{ gitea.sha }}"
-          # echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
-          # echo
+          echo "Branch/Tag: ${{ gitea.ref_name }}"
+          echo "Branch/Tag (full): ${{ gitea.ref }}"
+          echo "Ref Type: ${{ gitea.ref_type }}"
+          echo "Commit SHA: ${{ gitea.sha }}"
+          echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
+          echo
 
-          # echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
-          # echo
+          echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
+          echo
 
-          # echo "Workflow Actor: ${{ gitea.actor }}"
-          # echo "Actor ID: ${{ gitea.actor}}"
-          # echo "Token: ${{ gitea.token }}"
-          # echo "Workflow main name: \"${{ gitea.workflow }}\""
-          # echo
+          echo "Workflow Actor: ${{ gitea.actor }}"
+          echo "Actor ID: ${{ gitea.actor}}"
+          echo "Token: ${{ gitea.token }}"
+          echo "Workflow main name: \"${{ gitea.workflow }}\""
+          echo
 
-          # echo "Workspace: ${{ gitea.workspace }}"
-          # echo "Workflow event name: ${{ gitea.event_name }}"
-          # echo
+          echo "Workspace: ${{ gitea.workspace }}"
+          echo "Workflow event name: ${{ gitea.event_name }}"
+          echo
 
-          # #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
+          #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
 
       - name: Docker info
         run: |
