@@ -33,7 +33,7 @@ class FastapiUv:
                 .with_exec([
                     "sh",
                     "-c",
-                    "curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR='/usr/local' sh",
+                    "curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL='/usr/local/bin' sh",
                 ])
                 .with_directory("/src", src, exclude=[".venv/", ".mypy_cache/", "dist/", ".tox/"])
                 .with_workdir("/src")
