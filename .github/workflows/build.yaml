@@ -137,7 +137,7 @@ jobs:
           # EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
 
           # Build with Docker 🐳
-          docker build -t ${IMAGE_NAME}:latest \
+          docker build \
             -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}:latest \
             -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}:${IMAGE_TAG} \
             . \
