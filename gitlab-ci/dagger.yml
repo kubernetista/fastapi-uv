@@ -1,30 +1,32 @@
-# gitlab-ci Dagger pipeline
+# .gitlab-ci/dagger.yml : Dagger pipeline
 
 # Job template that defines the Docker-in-Docker service
 .docker:
   image: docker:latest
   services:
-    - docker:${DOCKER_VERSION}-dind
+    # - docker:${DOCKER_VERSION}-dind
+    - docker:dind
   variables:
     GIT_FETCH_EXTRA_FLAGS: --prune --quiet --tags --depth=100
+    # DOCKER_VERSION: "27.3.1"
     DOCKER_HOST: tcp://docker:2376
     DOCKER_TLS_VERIFY: "1"
     DOCKER_TLS_CERTDIR: "/certs"
     DOCKER_CERT_PATH: "/certs/client"
     DOCKER_DRIVER: overlay2
-    DOCKER_VERSION: "27.3.1"
+    # Do not show link to Dagger Cloud
+    SHUTUP: "true"
     # assumes the Dagger Cloud token is
     # in a masked/protected variable named DAGGER_CLOUD_TOKEN
     # set via the GitLab UI
     # DAGGER_CLOUD_TOKEN: $DAGGER_CLOUD_TOKEN
-    # Do not show link to Dagger Cloud
-    SHUTUP: "true"
 
 # Job template that installs the Dagger CLI
 .dagger:
   extends: [.docker]
   before_script:
     - apk add curl
+    # Install the Dagger CLI
     - curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=/usr/local/bin sh
 # prettier-ignore
 
@@ -44,16 +46,19 @@ dagger-build-push:
   extends: [.dagger]
   stage: build
   script:
+    # Debug the environment
     - ls -la /
     - pwd
     - ls -la .
-    # - echo dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$CI_COMMIT_SHORT_SHA"
-    - git describe --tags --abbrev=7 --always
+    # Set the image tag to the current git tag
     - export IMAGE_TAG=$(git describe --tags --abbrev=7 --always)
+    - echo "IMAGE_TAG: ${IMAGE_TAG}"
+    # Debug
     - echo dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
+    # Call the appropriate Dagger function
     - dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
     # - dagger call publish --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "" --tag "$CI_COMMIT_SHORT_SHA"
-    # for ephemeral runners only: override the default docker stop timeout and
+    # For ephemeral runners only: override the default docker stop timeout and
     # give the Dagger Engine more time to push cache data to Dagger Cloud
     - docker stop -t 300 $(docker ps --filter name="dagger-engine-*" -q)
 #

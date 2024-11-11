@@ -1,4 +1,4 @@
-# .gitlab-ci/gitlab.yml
+# .gitlab-ci/gitlab.yml : GitLab pipeline
 
 # Define the variables
 variables:
@@ -39,9 +39,9 @@ build:
   script:
     # Log in to GitLab Container Registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    # Build the Docker image and tag it
+    # Build the Docker image, tag it and push it to the registry
     - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" . --push
-    # Push the image to the registry
+    ## (already pushed in the build step above) Push the image to the registry
     # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
 # Job to test the Docker container after it has been built
