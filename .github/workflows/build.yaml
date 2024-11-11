@@ -1,0 +1,270 @@
+name: Build Docker Image
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build image
+    # runs-on: ubuntu-latest
+    runs-on: macos
+
+    # container: ghcr.io/catthehacker/ubuntu:act-latest
+    # container: ghcr.io/catthehacker/ubuntu:runner-latest
+    container:
+      image: ghcr.io/kubernetista/runner-root:v2
+      options: --privileged
+      # mount ./ca.crt:/etc/ssl/certs/ca-certificates.crt
+      volumes:
+        - ./ca.crt:/etc/ssl/certs/ca-certificates.crt
+      # options: --user 1001
+      # volumes:
+      #   - /run/docker:/run/docker
+
+    env:
+      IMAGE_NAME: fastapi-demo
+      APP: ${{ vars.APP }}
+      REGISTRY_GITEA_HTTPS: git.localhost
+      REGISTRY_LOCAL: registry.localhost:5000
+
+      REGISTRY_GITEA_K: gitea-http.git.svc.cluster.local:3000
+      REGISTRY_GITEA_HTTP: git.localhost:8000
+      # REGISTRY_GITEA_HTTPS: git.localhost:8443
+      # REGISTRY_GITEA_HTTPS: git.localhost:8000
+
+      REPO_OWNER: aruba-demo
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          clean: true
+
+      - name: Get image tag and store it in an environment variable
+        id: vars
+        run: |
+          export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
+          echo "IMAGE_TAG: ${IMAGE_TAG}"
+          # Save the tag to an environment variable for later steps
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
+
+      # - name: Extract short commit SHA (vars)
+      #   id: vars
+
+      # - name: Extract short commit SHA (vars)
+      #   id: vars
+      #   run: |
+      #     echo 1
+      #     echo "::set-output name=short_sha::${{ github.sha::0:6 }}"
+      #     echo 2
+      #     echo $GITHUB_SHA | cut -c1-6
+      #     echo 3
+      #     # echo "::set-output name=short_sha::$(echo $GITHUB_SHA | cut -c1-6)"
+
+      # - name: Print short commit SHA
+      #   run: |
+
+      # - name: Extract short commit SHA
+      #   # id: vars
+      #   run: |
+      #     # Set the short SHA to the first 6 characters of the full SHA
+      #     short_sha=$(echo $GITHUB_SHA | cut -c1-6)
+
+      #     # Save the short SHA to an environment variable for later steps
+      #     echo "short_sha=$short_sha" >> ${GITHUB_ENV}
+
+      #     # echo "short_sha=$(echo $GITHUB_SHA | cut -c1-6)" >> $GITHUB_ENV
+
+      #     # Print the short SHA
+      #     echo "short_sha=$short_sha"
+
+      - name: Print environment variables
+        run: |
+          echo "IMAGE_NAME            : $IMAGE_NAME"
+          echo "IMAGE_TAG             : ${IMAGE_TAG}"
+          echo "APP                   : $APP"
+          echo "REGISTRY_LOCAL        : $REGISTRY_LOCAL"
+          echo "REGISTRY_GITEA_K      : $REGISTRY_GITEA_K"
+          echo "REGISTRY_GITEA_HTTP   : $REGISTRY_GITEA_HTTP"
+          echo "REGISTRY_GITEA_HTTPS  : $REGISTRY_GITEA_HTTPS"
+          echo "REPO_OWNER            : ${REPO_OWNER}"
+          echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
+          echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
+
+          # echo "Runner Name: {{ gitea.runner.name }}"
+          # echo "Runner OS: {{ gitea.runner.os }}"
+          # echo "Server URL: {{ gitea.server_url }}"
+
+          echo "Repository: ${{ gitea.repository }}"
+          echo "Repository Owner: ${{ gitea.repository_owner }}"
+          echo "Branch/Tag: ${{ gitea.ref_name }}"
+          echo "Branch/Tag (full): ${{ gitea.ref }}"
+          echo "Ref Type: ${{ gitea.ref_type }}"
+          echo "Commit SHA: ${{ gitea.sha }}"
+          echo "Commit SHA short (v1): ${{ env.short_sha }}"
+          echo "Commit SHA short (v2): $(git rev-parse --short=6 HEAD)"
+
+          echo
+          echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
+          echo "Secret REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}"
+
+          echo
+          echo "Workflow Actor: ${{ gitea.actor }}"
+          echo "Actor ID: ${{ gitea.actor}}"
+          echo "Token: ${{ gitea.token }}"
+          echo
+          echo "Workflow main name: \"${{ gitea.workflow }}\""
+
+          echo
+          echo "Workspace: ${{ gitea.workspace }}"
+          echo "Workflow event name: ${{ gitea.event_name }}"
+
+          # empty
+          echo
+          echo "Workflow Triggering actor: ${{ gitea.triggering_actor }}"
+          echo "Workflow Ref: ${{ gitea.workflow_ref }}"
+          echo
+          echo "Commit Message: ${CI_COMMIT_MESSAGE}"
+          echo "Commit Author: ${CI_COMMIT_AUTHOR}"
+          echo "Commit Author Email: ${CI_COMMIT_AUTHOR_EMAIL}"
+
+          # ?
+          echo
+          echo "Pipeline ID: ${CI_PIPELINE_ID}"
+          echo "Pipeline Source: ${CI_PIPELINE_SOURCE}"
+
+          # ?
+          echo
+          echo "Job ID: ${CI_JOB_ID}"
+          echo "Job Container ID: ${{ gitea.job.container.id }}"
+          echo "Job Name: ${CI_JOB_NAME}"
+          echo "Job Stage: ${CI_JOB_STAGE}"
+
+          echo "\n    Full dump of ENV variables :\n"
+          env | sort
+
+      - name: Docker info
+        run: |
+          docker info
+
+      # - name: Pause to inspect the ACT Container
+      #   run: |
+      #     # Pause
+      #     date +"%Y-%m-%d - %H:%M:%S %Z"
+      #     echo "Sleeping for 5 minutes..."
+      #     sleep 300
+      #     echo " ...done."
+
+      # - name: Login to Container Registry
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ REGISTRY_GITEA }}:8000
+      #     username: ${{ secrets.REGISTRY_USERNAME }}
+      #     password: ${{ secrets.REGISTRY_PASSWORD }}
+      #     # username: ${{ gitea.actor }}
+      #     # password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Build and push
+        run: |
+          TODAY=$(date +'%Y-%m-%d')
+          EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
+
+          # Build with Docker 🐳
+          docker buildx build -t ${IMAGE_NAME}:latest \
+            -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest \
+            -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
+            -t ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest \
+            -t ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
+            .
+
+          # Log in 🔑
+          # echo "running:"
+          # echo "  docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}"
+          docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}
+
+          # Test Push with Alpine 🉑
+          docker pull alpine:latest
+          docker tag alpine:latest ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
+          docker push ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
+
+          # Push to LOCAL REGISTRY 🫸🏻
+          docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
+          docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha}
+
+          # # Push to GITEA REGISTRY 🛑
+          # docker tag ${IMAGE_NAME}:latest ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
+          # docker push ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
+          # docker push ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha}
+
+          # Build with Buildah 🧪
+          # echo "Starting buildah..."
+          # buildah bud -t ${IMAGE_NAME}:latest \
+          #   -t ${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+          #   -t ${REGISTRY_GITEA_HTTP}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+          #   -t ${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+          #   -t ${REGISTRY_GITEA_K}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+          #   .
+          # buildah login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}
+          # buildah push ${IMAGE_NAME}:latest docker://${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest
+          # # buildah push --tls-verify=false ${IMAGE_NAME}:latest docker://${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest
+
+      # - name: Set up Kaniko
+      #   run: |
+      #     mkdir -p /kaniko/.docker
+      #     echo "{\"auths\":{\"${REGISTRY_GITEA}\":{\"username\":\"${REGISTRY_USERNAME}\",\"password\":\"${REGISTRY_PASSWORD}\"}}}" > /kaniko/.docker/config.json
+
+      # - name: Build and push with Kaniko
+      #   run: |
+      #     TODAY=$(date +'%Y-%m-%d')
+      #     EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
+
+      #     pwd
+      #     ls -la
+
+      #     docker run \
+      #       -v .:/workspace \
+      #       -v /kaniko/.docker:/kaniko/.docker \
+      #       gcr.io/kaniko-project/executor:latest \
+      #       --context=dir:///workspace \
+      #       --dockerfile=/workspace/Dockerfile \
+      #       --destination=${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+      #       --destination=${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+      #       --destination=${REGISTRY_GITEA}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+      #       --destination=${REGISTRY_GITEA}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+      #       --insecure
+
+  # build:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 1
+  #         clean: true
+
+  #     - name: Set up Docker Buildx
+  #       uses: docker/setup-buildx-action@v3
+
+  #     - name: Build Docker image
+  #       run: |
+  #         docker build . -t fastapi-demo
+
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  #     - name: Push Docker image
+  #       run: |
+  #         docker tag fastapi-demo ${{ secrets.DOCKER_USERNAME }}/fastapi-demo:latest
+  #         docker push ${{ secrets.DOCKER_USERNAME }}/fastapi-demo:latest
