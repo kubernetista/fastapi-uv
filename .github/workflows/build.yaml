@@ -124,6 +124,12 @@ jobs:
       #     sleep 300
       #     echo " ...done."
 
+      - name: Create Docker certs directory
+        run: mkdir -p /etc/docker/certs.d/git.localtest.me
+
+      - name: Add custom CA certificate
+        run: echo "${{ secrets.CUSTOM_CA_CERT }}" > /etc/docker/certs.d/git.localtest.me/ca.crt
+
       - name: Login to Container Registry
         uses: docker/login-action@v3
         with:
