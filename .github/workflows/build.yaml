@@ -57,7 +57,7 @@ jobs:
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
-          export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
+          export IMAGE_TAG="$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')"
           echo "IMAGE_TAG: ${IMAGE_TAG}"
 
           # Save to env vars for later steps
