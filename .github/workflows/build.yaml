@@ -54,22 +54,18 @@ jobs:
       - name: Get image tag and store it in an environment variable
         id: vars
         run: |
-          echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///"
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
-          git describe --tags --abbrev=8 --always
           export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
           echo "IMAGE_TAG: ${IMAGE_TAG}"
 
+          # Save to env vars for later steps
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
           echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
 
       - name: Print environment variables
         run: |
-          # Save to env vars for later steps
-          echo "IMAGE_NAME            : ${IMAGE_NAME}"
-          echo "IMAGE_TAG             : ${IMAGE_TAG}"
           echo "APP                   : $APP"
           echo "REGISTRY_LOCAL        : ${REGISTRY_LOCAL}"
           echo "REGISTRY_GITEA        : ${REGISTRY_GITEA}"
@@ -137,38 +133,24 @@ jobs:
 
       - name: Build and push
         run: |
-          TODAY=$(date +'%Y-%m-%d')
-          EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
+          # TODAY=$(date +'%Y-%m-%d')
+          # EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
 
-          # # Build with Docker 🐳
-          # docker buildx build -t ${IMAGE_NAME}:latest \
-          #   -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest \
-          #   -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
-          #   -t ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest \
-          #   -t ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
-          #   .
+          # Build with Docker 🐳
+          docker build -t ${IMAGE_NAME}:latest \
+            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}:latest \
+            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}:${IMAGE_TAG} \
+            . \
+            --push
 
-            # Build with Docker 🐳
-          docker buildx build -t ${IMAGE_NAME}:latest \
-            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest \
-            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} \
-            .
+          # # Test Push with Alpine 🉑
+          # docker pull alpine:latest
+          # docker tag alpine:latest ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
+          # docker push ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
 
-            # -t ${REGISTRY_GITEA}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
-
-          # Log in 🔑
-          # echo "running:"
-          # echo "  docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}"
-          docker login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}
-
-          # Test Push with Alpine 🉑
-          docker pull alpine:latest
-          docker tag alpine:latest ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
-          docker push ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/alpine:latest
-
-          # Push to LOCAL REGISTRY 🫸🏻
-          docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
-          docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha}
+          # # Push to LOCAL REGISTRY 🫸🏻
+          # docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
+          # docker push ${REGISTRY_LOCAL}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha}
 
           # # Push to GITEA REGISTRY 🛑
           # docker tag ${IMAGE_NAME}:latest ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:latest
