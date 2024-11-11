@@ -55,7 +55,7 @@ jobs:
         id: vars
         run: |
           echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\//-/g"
-          IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "'s/${GITHUB_REPOSITORY_OWNER}\//-/g'")
+          IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\//-/g")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
           export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
