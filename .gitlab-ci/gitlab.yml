@@ -42,24 +42,27 @@ build:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
     # Build the Docker image, tag it and push it to the registry
 
-    # CI_PROJECT_NAME if the project URL is gitlab.example.com/group-name/project-1, CI_PROJECT_NAME is project-1.
-    # CI_PROJECT_NAMESPACE
-    # CI_REGISTRY : registry.gitlab.example.com
-    # CI_REGISTRY_IMAGE : registry.gitlab.example.com/my_group/my_project
     - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
     - echo "IMAGE_TAG = ${IMAGE_TAG}"
-
-    # - docker build -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" . --push
-
-    ## (already pushed in the build step above) Push the image to the registry
-    # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-
-    # "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}"
+    # Build the Docker image, tag it and push it to the registry as:
+    #   registry.gitlab.com/user/fastapi-uv/fastapi-uv:v0.3.4-8-g7674a5d4
     - |
       docker build \
        -t "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${IMAGE_TAG}" \
        . \
        --push
+    # To push also with the git commit short sha, use:
+    # "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${CI_COMMIT_SHORT_SHA}"
+    # GIT ENV VARIABLES:
+    #   CI_PROJECT_NAME if the project URL is gitlab.example.com/group-name/project-1, CI_PROJECT_NAME is project-1.
+    #   CI_PROJECT_NAMESPACE
+    #   CI_REGISTRY : registry.gitlab.example.com
+    #   CI_REGISTRY_IMAGE : registry.gitlab.example.com/my_group/my_project
+    #   CI_COMMIT_SHORT_SHA : 8 character commit hash
+
+    ## (already pushed in the build step above)
+    ## Push the image to the registry
+    # - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
 # Job to test the Docker container after it has been built
 container-test:
