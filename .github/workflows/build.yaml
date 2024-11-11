@@ -62,16 +62,18 @@ jobs:
           export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
           echo "IMAGE_TAG: ${IMAGE_TAG}"
 
-          # Save to env vars for later steps
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
           echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
-          echo
-          echo "IMAGE_NAME            : $IMAGE_NAME"
+
+      - name: Print environment variables
+        run: |
+          # Save to env vars for later steps
+          echo "IMAGE_NAME            : ${IMAGE_NAME}"
           echo "IMAGE_TAG             : ${IMAGE_TAG}"
           echo "APP                   : $APP"
-          echo "REGISTRY_LOCAL        : $REGISTRY_LOCAL"
-          echo "REGISTRY_GITEA        : $REGISTRY_GITEA"
-          echo "REGISTRY_GITEA_K      : $REGISTRY_GITEA_K"
+          echo "REGISTRY_LOCAL        : ${REGISTRY_LOCAL}"
+          echo "REGISTRY_GITEA        : ${REGISTRY_GITEA}"
+          echo "REGISTRY_GITEA_K      : ${REGISTRY_GITEA_K}"
           echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
@@ -84,8 +86,6 @@ jobs:
           echo -e "\n    Full dump of ENV variables :\n"
           env | sort
 
-      - name: Print environment variables
-        run: |
           echo
 
           echo "Repository: ${{ gitea.repository }}"
