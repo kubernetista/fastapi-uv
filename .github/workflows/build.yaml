@@ -78,6 +78,7 @@ jobs:
 
       - name: Print environment variables
         run: |
+          echo
 
           # echo "Repository: ${{ gitea.repository }}"
           # echo "Repository Owner: ${{ gitea.repository_owner }}"
