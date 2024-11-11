@@ -15,8 +15,9 @@ test:
   before_script:
     # Install necessary packages
     - apt-get update && apt-get install -y curl
-    - curl -LsSf https://astral.sh/uv/install.sh | sh
-    - source $HOME/.cargo/env
+    # - curl -LsSf https://astral.sh/uv/install.sh | sh
+    - curl -LsSf https://astral.sh/uv/install.sh | env UV_UNMANAGED_INSTALL='/usr/local/bin' sh
+    # - source $HOME/.cargo/env
     - uv python install 3.12
   script:
     # Run tests using uv
