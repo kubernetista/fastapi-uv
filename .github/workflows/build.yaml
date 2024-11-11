@@ -108,16 +108,16 @@ jobs:
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
 
-          echo "Repository: ${{ gitea.repository }}"
-          echo "Repository Owner: ${{ gitea.repository_owner }}"
-          echo
+          # echo "Repository: ${{ gitea.repository }}"
+          # echo "Repository Owner: ${{ gitea.repository_owner }}"
+          # echo
 
-          echo "Branch/Tag: ${{ gitea.ref_name }}"
-          echo "Branch/Tag (full): ${{ gitea.ref }}"
-          echo "Ref Type: ${{ gitea.ref_type }}"
-          echo "Commit SHA: ${{ gitea.sha }}"
-          echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
-          echo
+          # echo "Branch/Tag: ${{ gitea.ref_name }}"
+          # echo "Branch/Tag (full): ${{ gitea.ref }}"
+          # echo "Ref Type: ${{ gitea.ref_type }}"
+          # echo "Commit SHA: ${{ gitea.sha }}"
+          # echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
+          # echo
 
           # echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
           # echo
