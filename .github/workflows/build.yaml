@@ -48,8 +48,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
           clean: true
+          # fetch-depth: 1
 
       - name: Get image tag and store it in an environment variable
         id: vars
@@ -197,8 +197,9 @@ jobs:
             # Build with Docker 🐳
           docker buildx build -t ${IMAGE_NAME}:latest \
             -t ${REGISTRY_GITEA_HTTPS}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest \
-            -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
             .
+
+            # -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
 
           # Log in 🔑
           # echo "running:"
