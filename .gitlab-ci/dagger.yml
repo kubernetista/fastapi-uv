@@ -59,7 +59,7 @@ dagger-build-push:
     - pwd
     - ls -la .
     # Set the image tag to the current git tag
-    - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')"
+    - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
     - echo "IMAGE_TAG = ${IMAGE_TAG}"
     # Debug
     - echo dagger call build-push --registry="$CI_REGISTRY" --username="$CI_REGISTRY_USER" --password=env:CI_REGISTRY_PASSWORD --path "$CI_PROJECT_PATH" --image "$CI_PROJECT_TITLE" --tag "$IMAGE_TAG" --src .
