@@ -75,6 +75,14 @@ jobs:
           echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
+          echo "Trying to login to container registry with:"
+          echo "registry: ${{ REGISTRY_GITEA }}"
+          echo "username: ${{ gitea.actor }}"
+          echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
+          echo "token: ${{ gitea.token }}"
+          echo
+          echo "\n    Full dump of ENV variables :\n"
+          env | sort
 
       - name: Print environment variables
         run: |
@@ -104,15 +112,6 @@ jobs:
           # echo "Workflow event name: ${{ gitea.event_name }}"
           # echo
 
-          # echo "Trying to login to container registry with:"
-          # echo "registry: ${{ REGISTRY_GITEA }}"
-          # echo "username: ${{ gitea.actor }}"
-          # echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
-          # echo "token: ${{ gitea.token }}"
-          # echo
-
-          # echo "\n    Full dump of ENV variables :\n"
-          # env | sort
           # #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
 
       - name: Docker info
