@@ -40,8 +40,7 @@ build:
   script:
     # Log in to GitLab Container Registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-    # Build the Docker image, tag it and push it to the registry
-
+    # Set the image tag from the git tag
     - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
     - echo "IMAGE_TAG = ${IMAGE_TAG}"
     # Build the Docker image, tag it and push it to the registry as:
@@ -66,7 +65,7 @@ build:
 
 # Job to test the Docker container after it has been built
 container-test:
-  stage: pre-deploy-check
+  stage: pre-deploy-test
   image: docker:latest
   services:
     - docker:dind
@@ -78,6 +77,11 @@ container-test:
     - docker info
     # Log in to GitLab Container Registry
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+    # Set the image tag from the git tag
+    - export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
+    - echo "IMAGE_TAG = ${IMAGE_TAG}"
+    # Output the full container image
+    - echo "${CI_REGISTRY}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${CI_PROJECT_NAME}:${IMAGE_TAG}"
     # Pull the Docker image from the registry
     - |
       docker pull \

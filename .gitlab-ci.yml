@@ -5,7 +5,7 @@ stages:
   - test
   - build
   - push
-  - pre-deploy-check
+  - pre-deploy-test
   - deploy
   - post-deploy-test
 
