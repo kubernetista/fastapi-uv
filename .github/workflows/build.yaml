@@ -29,7 +29,7 @@ jobs:
     env:
       # IMAGE_NAME: fastapi-uv
       APP: ${{ vars.APP }}
-      REGISTRY_GITEA_HTTPS: git.localtest.me
+      REGISTRY_GITEA: git.localtest.me
       # REGISTRY_LOCAL: registry.localhost:5000
 
       REGISTRY_GITEA_K: gitea-http.git.svc.cluster.local:3000
@@ -58,6 +58,7 @@ jobs:
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
+          git describe --tags --abbrev=8 --always
           export IMAGE_TAG="$(git describe --tags --abbrev=8 --always)"
           echo "IMAGE_TAG: ${IMAGE_TAG}"
 
@@ -101,9 +102,8 @@ jobs:
           echo "IMAGE_TAG             : ${IMAGE_TAG}"
           echo "APP                   : $APP"
           echo "REGISTRY_LOCAL        : $REGISTRY_LOCAL"
+          echo "REGISTRY_GITEA        : $REGISTRY_GITEA"
           echo "REGISTRY_GITEA_K      : $REGISTRY_GITEA_K"
-          echo "REGISTRY_GITEA_HTTP   : $REGISTRY_GITEA_HTTP"
-          echo "REGISTRY_GITEA_HTTPS  : $REGISTRY_GITEA_HTTPS"
           echo "REPO_OWNER            : ${REPO_OWNER}"
           echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
@@ -135,27 +135,6 @@ jobs:
           echo
           echo "Workspace: ${{ gitea.workspace }}"
           echo "Workflow event name: ${{ gitea.event_name }}"
-
-          # empty
-          echo
-          echo "Workflow Triggering actor: ${{ gitea.triggering_actor }}"
-          echo "Workflow Ref: ${{ gitea.workflow_ref }}"
-          echo
-          echo "Commit Message: ${CI_COMMIT_MESSAGE}"
-          echo "Commit Author: ${CI_COMMIT_AUTHOR}"
-          echo "Commit Author Email: ${CI_COMMIT_AUTHOR_EMAIL}"
-
-          # ?
-          echo
-          echo "Pipeline ID: ${CI_PIPELINE_ID}"
-          echo "Pipeline Source: ${CI_PIPELINE_SOURCE}"
-
-          # ?
-          echo
-          echo "Job ID: ${CI_JOB_ID}"
-          echo "Job Container ID: ${{ gitea.job.container.id }}"
-          echo "Job Name: ${CI_JOB_NAME}"
-          echo "Job Stage: ${CI_JOB_STAGE}"
 
           echo "\n    Full dump of ENV variables :\n"
           env | sort
@@ -196,10 +175,11 @@ jobs:
 
             # Build with Docker 🐳
           docker buildx build -t ${IMAGE_NAME}:latest \
-            -t ${REGISTRY_GITEA_HTTPS}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest \
+            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:latest \
+            -t ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} \
             .
 
-            # -t ${REGISTRY_GITEA_HTTPS}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
+            # -t ${REGISTRY_GITEA}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${short_sha} \
 
           # Log in 🔑
           # echo "running:"
