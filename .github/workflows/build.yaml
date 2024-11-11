@@ -74,7 +74,7 @@ jobs:
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
           echo "Trying to login to container registry with:"
-          echo "registry: ${{ REGISTRY_GITEA }}"
+          echo "registry: ${{ env.REGISTRY_GITEA }}"
           echo "username: ${{ gitea.actor }}"
           echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
           echo "token: ${{ gitea.token }}"
