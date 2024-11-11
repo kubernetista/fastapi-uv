@@ -51,7 +51,7 @@ jobs:
           clean: true
           fetch-depth: 0
 
-      - name: Get image tag and store it in an environment variable
+      - name: Set image tag and store in env
         id: vars
         run: |
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
@@ -77,9 +77,6 @@ jobs:
           echo "username: ${{ gitea.actor }}"
           echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
           echo "token: ${{ gitea.token }}"
-          echo
-          echo "\n    Full dump of ENV variables :\n"
-          env | sort
 
           echo
 
@@ -95,9 +92,6 @@ jobs:
           echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
           echo
 
-          echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
-          echo
-
           echo "Workflow Actor: ${{ gitea.actor }}"
           echo "Actor ID: ${{ gitea.actor}}"
           echo "Token: ${{ gitea.token }}"
@@ -108,8 +102,15 @@ jobs:
           echo "Workflow event name: ${{ gitea.event_name }}"
           echo
 
+          echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
+          echo
+
           echo "1: ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
           echo "2: ${{ env.REGISTRY_GITEA }}/${{ env.GITHUB_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          echo
+
+          echo "\n    Full dump of ENV variables :\n"
+          env | sort
 
       # - name: Docker info
       #   run: |
