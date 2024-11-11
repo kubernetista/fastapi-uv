@@ -139,13 +139,13 @@ jobs:
           echo "Trying to login to container registry with:"
           echo "registry: ${{ REGISTRY_GITEA }}"
           echo "username: ${{ gitea.actor }}"
-          #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
           echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
           echo "token: ${{ gitea.token }}"
           echo
 
           echo "\n    Full dump of ENV variables :\n"
           env | sort
+          #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
 
       - name: Docker info
         run: |
