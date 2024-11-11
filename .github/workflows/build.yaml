@@ -104,7 +104,6 @@ jobs:
           echo "REGISTRY_LOCAL        : $REGISTRY_LOCAL"
           echo "REGISTRY_GITEA        : $REGISTRY_GITEA"
           echo "REGISTRY_GITEA_K      : $REGISTRY_GITEA_K"
-          echo "REPO_OWNER            : ${REPO_OWNER}"
           echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
@@ -137,6 +136,14 @@ jobs:
           echo "Workflow event name: ${{ gitea.event_name }}"
           echo
 
+          echo "Trying to login to container registry with:"
+          echo "registry: ${{ REGISTRY_GITEA }}"
+          echo "username: ${{ gitea.actor }}"
+          #echo "username: ${{ env.GITHUB_REPOSITORY_OWNER }}""
+          echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
+          echo "token: ${{ gitea.token }}"
+          echo
+
           echo "\n    Full dump of ENV variables :\n"
           env | sort
 
@@ -156,7 +163,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ REGISTRY_GITEA }}
-          username: ${{ env.GITHUB_REPOSITORY_OWNER }}
+          username: ${{ gitea.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
           # username: ${{ gitea.actor }}
           # password: ${{ secrets.REGISTRY_TOKEN }}
