@@ -65,39 +65,7 @@ jobs:
           # Save to env vars for later steps
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
           echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
-
-      # - name: Extract short commit SHA (vars)
-      #   id: vars
-
-      # - name: Extract short commit SHA (vars)
-      #   id: vars
-      #   run: |
-      #     echo 1
-      #     echo "::set-output name=short_sha::${{ github.sha::0:6 }}"
-      #     echo 2
-      #     echo $GITHUB_SHA | cut -c1-6
-      #     echo 3
-      #     # echo "::set-output name=short_sha::$(echo $GITHUB_SHA | cut -c1-6)"
-
-      # - name: Print short commit SHA
-      #   run: |
-
-      # - name: Extract short commit SHA
-      #   # id: vars
-      #   run: |
-      #     # Set the short SHA to the first 6 characters of the full SHA
-      #     short_sha=$(echo $GITHUB_SHA | cut -c1-6)
-
-      #     # Save the short SHA to an environment variable for later steps
-      #     echo "short_sha=$short_sha" >> ${GITHUB_ENV}
-
-      #     # echo "short_sha=$(echo $GITHUB_SHA | cut -c1-6)" >> $GITHUB_ENV
-
-      #     # Print the short SHA
-      #     echo "short_sha=$short_sha"
-
-      - name: Print environment variables
-        run: |
+          echo
           echo "IMAGE_NAME            : $IMAGE_NAME"
           echo "IMAGE_TAG             : ${IMAGE_TAG}"
           echo "APP                   : $APP"
@@ -107,6 +75,9 @@ jobs:
           echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
           echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
           echo
+
+      - name: Print environment variables
+        run: |
 
           # echo "Repository: ${{ gitea.repository }}"
           # echo "Repository Owner: ${{ gitea.repository_owner }}"
