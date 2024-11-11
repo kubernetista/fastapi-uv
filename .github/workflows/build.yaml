@@ -124,6 +124,9 @@ jobs:
       #     sleep 300
       #     echo " ...done."
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Create Docker certs directory
         run: mkdir -p /etc/docker/certs.d/git.localtest.me
 
