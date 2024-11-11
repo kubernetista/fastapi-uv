@@ -85,7 +85,7 @@ jobs:
 
           echo "Repository: ${{ gitea.repository }}"
           echo "Repository Owner: ${{ gitea.repository_owner }}"
-          echo "GITHUB_REPOSITORY_OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}""
+          echo "GITHUB_REPOSITORY_OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}"
           echo
 
           echo "Branch/Tag: ${{ gitea.ref_name }}"
