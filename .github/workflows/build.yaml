@@ -23,7 +23,8 @@ jobs:
       - name: Set image tag
         id: vars
         run: |
-          echo "IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')" >> $GITHUB_ENV
+          IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
           echo "IMAGE_TAG = ${IMAGE_TAG}"
 
       - name: Set up Docker Buildx
