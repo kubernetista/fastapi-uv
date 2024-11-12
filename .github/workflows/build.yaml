@@ -1,4 +1,4 @@
-name: Build Docker Image
+name: Build container and push to registry 🐳
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    name: Build image
+    name: Build container
     # runs-on: ubuntu-latest
     runs-on: macos
 
@@ -44,6 +44,10 @@ jobs:
     steps:
       - name: Disable SSL verification for Git
         run: git config --global http.sslVerify false
+
+      # - name: Configure Git to trust a self-signed CA
+      #   run: |
+      #     git config --global http.sslCAInfo /home/javl/git-certs/cert.pem
 
       - name: Checkout
         uses: actions/checkout@v4
