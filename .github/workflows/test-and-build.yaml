@@ -1,4 +1,4 @@
-name: Build container and push to GHCR 🐳  (GitHub)
+name: CI - GitHub Actions
 
 on:
   push:

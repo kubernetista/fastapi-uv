@@ -1,4 +1,4 @@
-name: Dagger in GitHub Actions
+name: Dagger CI - GitHub Actions
 
 on:
   push:
