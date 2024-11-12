@@ -37,6 +37,7 @@ jobs:
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
   build:
+    # needs: test
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout code
@@ -63,9 +64,9 @@ jobs:
       - name: Build and push the container image
         id: build-push
         uses: dagger/dagger-for-github@v7
-        with:
-          module: .
-          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
         env:
           CR_TOKEN: ${{ secrets.CR_PAT }}
           SHUTUP: 1
+        with:
+          #   module: .
+          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
