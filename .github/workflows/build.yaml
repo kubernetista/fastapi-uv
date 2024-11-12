@@ -27,9 +27,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set image tag
+        id: vars
+        run: echo "IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')" >> $GITHUB_ENV
+
       - name: Build and push the container image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository }}/fastapi-uv:latest
+          # tags: ghcr.io/${{ github.repository }}/fastapi-uv:${{ env.IMAGE_TAG }}
+          tags: ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
