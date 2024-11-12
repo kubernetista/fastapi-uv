@@ -9,9 +9,52 @@ on:
       - main
 
 jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run mypy
+        uses: getsentry/action-uv@v1
+        with:
+          args: run mypy ./src
+
+      - name: Run deptry
+        uses: getsentry/action-uv@v1
+        with:
+          args: run deptry ./src
+
+      - name: Run pyright
+        uses: getsentry/action-uv@v1
+        with:
+          args: run --with pyright pyright ./src
+
+      - name: Run pytest
+        uses: getsentry/action-uv@v1
+        with:
+          args: run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
   build:
     name: Build and Push Container
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout code
