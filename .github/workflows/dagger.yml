@@ -32,7 +32,7 @@ jobs:
       - name: Test the app
         uses: dagger/dagger-for-github@v7
         with:
-          module: .
+          #   module: .
           call: test --src=.
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
@@ -52,7 +52,17 @@ jobs:
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
           echo "IMAGE_TAG = ${IMAGE_TAG}"
 
+      - name: Test variables
+        run: |
+          echo "Registry: ${{ secrets.GHCR_REGISTRY }}"
+          echo "Username: ${{ github.actor }}"
+          echo "Password: ${{ secrets.GITHUB_TOKEN }}"
+          echo "Path: ${{ github.repository }}"
+          echo "Image: ${{ github.event.repository.name }}"
+          echo "Tag: ${{ env.IMAGE_TAG }}"
+
       - name: Build and push the container image
+        id: build-push
         uses: dagger/dagger-for-github@v7
         with:
           module: .
