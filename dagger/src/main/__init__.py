@@ -43,6 +43,7 @@ class FastapiUv:
                 .with_exec(["sh", "-c", "uv run mypy ./src"])
                 .with_exec(["sh", "-c", "uv run deptry ./src"])
                 .with_exec(["sh", "-c", "uv run --with pyright pyright ./src"])
+                .with_exec(["sh", "-c", "uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml"])
                 # the result of `sync` is the container, which allows continued chaining
                 .sync()
             )
