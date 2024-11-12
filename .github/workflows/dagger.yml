@@ -68,7 +68,7 @@ jobs:
           module: .
           call: |
             build-push \
-            --registry="${{ secrets.GHCR_REGISTRY }}" \
+            --registry="ghcr.io" \
             --username="${{ github.actor }}" \
             --password="${{ secrets.GITHUB_TOKEN }}" \
             --path "${{ github.repository }}" \
