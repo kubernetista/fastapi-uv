@@ -1,0 +1,237 @@
+name: Build and push container 🐳 (Gitea)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and push container (Gitea)
+    # runs-on: ubuntu-latest
+    runs-on: macos
+
+    # container: ghcr.io/catthehacker/ubuntu:act-latest
+    # container: ghcr.io/catthehacker/ubuntu:runner-latest
+    container:
+      image: ghcr.io/kubernetista/runner-root:v2
+      options: --privileged
+      # mount ./ca.crt:/etc/ssl/certs/ca-certificates.crt
+      volumes:
+        - ./ca.crt:/etc/ssl/certs/ca-certificates.crt
+      # options: --user 1001
+      # volumes:
+      #   - /run/docker:/run/docker
+
+    env:
+      # IMAGE_NAME: fastapi-uv
+      APP: ${{ vars.APP }}
+      REGISTRY_GITEA: git.localtest.me
+      # REGISTRY_LOCAL: registry.localhost:5000
+
+      REGISTRY_GITEA_K: gitea-http.git.svc.cluster.local:3000
+      # REGISTRY_GITEA_HTTP: git.localhost:8000
+      # REGISTRY_GITEA_HTTPS: git.localhost:8443
+      # REGISTRY_GITEA_HTTPS: git.localhost:8000
+
+      # REPO_OWNER: aruba-demo
+      REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+      REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
+    steps:
+      - name: Disable SSL verification for Git
+        run: git config --global http.sslVerify false
+
+      # - name: Configure Git to trust a self-signed CA
+      #   run: |
+      #     git config --global http.sslCAInfo /home/javl/git-certs/cert.pem
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
+      - name: Set image tag and store in env
+        id: vars
+        run: |
+          IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
+          echo "IMAGE_NAME: ${IMAGE_NAME}"
+
+          export IMAGE_TAG="$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')"
+          echo "IMAGE_TAG: ${IMAGE_TAG}"
+
+          # Save to env vars for later steps
+          echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
+
+      - name: Print environment variables
+        run: |
+          echo "REGISTRY_LOCAL        : ${REGISTRY_LOCAL}"
+          echo "REGISTRY_GITEA        : ${REGISTRY_GITEA}"
+          echo "REGISTRY_GITEA_K      : ${REGISTRY_GITEA_K}"
+          echo "REGISTRY_USERNAME     : ${REGISTRY_USERNAME}"
+          echo "REGISTRY_PASSWORD     : ${REGISTRY_PASSWORD}"
+          echo
+          echo "Trying to login to container registry with:"
+          echo "registry: ${{ env.REGISTRY_GITEA }}"
+          echo "username: ${{ gitea.actor }}"
+          echo "password: ${{ secrets.REGISTRY_PASSWORD }}"
+          echo "token: ${{ gitea.token }}"
+
+          echo
+
+          echo "Repository: ${{ gitea.repository }}"
+          echo "Repository Owner: ${{ gitea.repository_owner }}"
+          echo "GITHUB_REPOSITORY_OWNER: ${{ env.GITHUB_REPOSITORY_OWNER }}"
+          echo
+
+          echo "Branch/Tag: ${{ gitea.ref_name }}"
+          echo "Branch/Tag (full): ${{ gitea.ref }}"
+          echo "Ref Type: ${{ gitea.ref_type }}"
+          echo "Commit SHA: ${{ gitea.sha }}"
+          echo "Commit SHA short (v2): $(git rev-parse --short=8 HEAD)"
+          echo
+
+          echo "Workflow Actor: ${{ gitea.actor }}"
+          echo "Actor ID: ${{ gitea.actor}}"
+          echo "Token: ${{ gitea.token }}"
+          echo "Workflow main name: \"${{ gitea.workflow }}\""
+          echo
+
+          echo "Workspace: ${{ gitea.workspace }}"
+          echo "Workflow event name: ${{ gitea.event_name }}"
+          echo
+
+          echo "Env REGISTRY_GITEA: ${{ env.REGISTRY_GITEA }}"
+          echo
+
+          echo "1: ${REGISTRY_GITEA}/${GITHUB_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}"
+          echo "2: ${{ env.REGISTRY_GITEA }}/${{ env.GITHUB_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}"
+          echo
+
+          echo "\n    Full dump of ENV variables :\n"
+          env | sort
+
+      # - name: Docker info
+      #   run: |
+      #     docker info
+
+      # - name: Pause to inspect the ACT Container
+      #   run: |
+      #     # Pause
+      #     date +"%Y-%m-%d - %H:%M:%S %Z"
+      #     echo "Sleeping for 5 minutes..."
+      #     sleep 300
+      #     echo " ...done."
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Create Docker certs directory and add custom CA certificate
+        run: |
+          mkdir -p /etc/docker/certs.d/git.localtest.me
+          echo "${{ secrets.CUSTOM_CA_CERT }}" > /etc/docker/certs.d/git.localtest.me/ca.crt
+          echo "Added /etc/docker/certs.d/git.localtest.me/ca.crt"
+
+      - name: Login to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GITEA }}
+          username: ${{ gitea.actor }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+          # username: ${{ gitea.actor }}
+          # password: ${{ gitea.token }}
+
+      - name: Test Push alpine:latest 🉑
+        run: |
+          docker pull alpine:latest
+          docker tag alpine:latest ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:latest
+          docker push ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:latest
+
+      - name: Build and push with docker CLI
+        timeout-minutes: 1
+        run: |
+          docker buildx build \
+          -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
+          -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+          . \
+          --push --progress plain
+
+      - name: docker/build-push-action@v6
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          # tags: ${{ env.REGISTRY_GITEA }}/${{ env.GITHUB_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+      #   steps:
+      # - name: Set up Kaniko
+      #   run: |
+      #     mkdir -p /kaniko/.docker
+      #     echo "{\"auths\":{\"${REGISTRY_GITEA}\":{\"username\":\"${REGISTRY_USERNAME}\",\"password\":\"${REGISTRY_PASSWORD}\"}}}" > /kaniko/.docker/config.json
+
+      # - name: Build and push with Kaniko
+      #   run: |
+      #     TODAY=$(date +'%Y-%m-%d')
+      #     EPOCH=$(date +%s | awk '{print substr($0, length($0)-6)}')
+
+      #     pwd
+      #     ls -la
+
+      #     docker run \
+      #       -v .:/workspace \
+      #       -v /kaniko/.docker:/kaniko/.docker \
+      #       gcr.io/kaniko-project/executor:latest \
+      #       --context=dir:///workspace \
+      #       --dockerfile=/workspace/Dockerfile \
+      #       --destination=${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+      #       --destination=${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+      #       --destination=${REGISTRY_GITEA}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+      #       --destination=${REGISTRY_GITEA}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+      #       --insecure
+
+      # build:
+      #   runs-on: ubuntu-latest
+
+      #     - name: Checkout code
+      #       uses: actions/checkout@v4
+      #       with:
+      #         fetch-depth: 1
+      #         clean: true
+
+      #     - name: Set up Docker Buildx
+      #       uses: docker/setup-buildx-action@v3
+
+      #     - name: Build Docker image
+      #       run: |
+      #         docker build . -t fastapi-demo
+
+      #     - name: Login to Docker Hub
+      #       uses: docker/login-action@v3
+      #       with:
+    #         username: ${{ secrets.DOCKER_USERNAME }}
+    #         password: ${{ secrets.DOCKER_PASSWORD }}
+
+    #     - name: Push Docker image
+    #       run: |
+    #         docker tag fastapi-demo ${{ secrets.DOCKER_USERNAME }}/fastapi-demo:latest
+    #         docker push ${{ secrets.DOCKER_USERNAME }}/fastapi-demo:latest
+
+    # - name: Buildah
+    #   run: |
+    #     # Build with Buildah 🧪
+    #     # echo "Starting buildah..."
+    #     # buildah bud -t ${IMAGE_NAME}:latest \
+    #     #   -t ${REGISTRY_LOCAL}/${REPO_OWNER}/${IMAGE_NAME}:${TODAY} \
+    #     #   -t ${REGISTRY_GITEA_HTTP}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+    #     #   -t ${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+    #     #   -t ${REGISTRY_GITEA_K}/${REPO_OWNER}/${IMAGE_NAME}:latest \
+    #     #   .
+    #     # buildah login -u ${REGISTRY_USERNAME} -p ${REGISTRY_PASSWORD} ${REGISTRY_GITEA_HTTPS}
+    #     # buildah push ${IMAGE_NAME}:latest docker://${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest
+    #     # # buildah push --tls-verify=false ${IMAGE_NAME}:latest docker://${REGISTRY_GITEA_HTTPS}/${REPO_OWNER}/${IMAGE_NAME}:latest
