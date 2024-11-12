@@ -37,7 +37,7 @@ jobs:
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
   build:
-    # needs: test
+    needs: test
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout code
@@ -69,5 +69,4 @@ jobs:
           SHUTUP: 1
         with:
           #   module: .
-          call: |
-            build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
+          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
