@@ -54,7 +54,6 @@ jobs:
 
       - name: Test variables
         run: |
-          echo "Registry: ${{ secrets.GHCR_REGISTRY }}"
           echo "Username: ${{ github.actor }}"
           echo "Password: ${{ secrets.GITHUB_TOKEN }}"
           echo "Path: ${{ github.repository }}"
@@ -66,4 +65,6 @@ jobs:
         uses: dagger/dagger-for-github@v7
         with:
           module: .
-          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password="${{ secrets.GITHUB_TOKEN }}" --path="${{ github.repository }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
+          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:GH_TOKEN --path="${{ github.repository }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
