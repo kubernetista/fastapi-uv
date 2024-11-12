@@ -146,7 +146,7 @@ jobs:
           # username: ${{ gitea.actor }}
           # password: ${{ gitea.token }}
 
-      - name: Test Push alpine:latest 🉑
+      - name: Test push an Alpine image 🉑
         run: |
           NOW=$(date +'%Y%m%d-%H%M%S%Z')
           ##EPOCH=$(date +%s | awk '{print substr($0,length($0)-6)}')
