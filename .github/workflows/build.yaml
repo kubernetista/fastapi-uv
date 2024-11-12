@@ -150,7 +150,7 @@ jobs:
 
       - name: Build and push with docker CLI
         run: |
-          docker build \
+          docker buildx build \
           -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
           -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
           . \
