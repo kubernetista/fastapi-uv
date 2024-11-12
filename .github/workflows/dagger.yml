@@ -17,7 +17,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  call:
+  test:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
@@ -26,12 +26,33 @@ jobs:
         uses: dagger/dagger-for-github@v7
         with:
           module: github.com/shykes/daggerverse/hello
-          call: hello --greeting Hola --name Jeremy
+          call: hello --greeting "Ciao" --name "Ugo"
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
-      - name: Test
+      - name: Test the app
         uses: dagger/dagger-for-github@v7
         with:
           module: .
           call: test --src=.
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
+
+  build:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Set image tag
+        id: vars
+        run: echo "IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')" >> $GITHUB_ENV
+
+      - name: Build and push the container image
+        uses: dagger/dagger-for-github@v7
+        with:
+          module: .
+          call: |
+            build-push \
+            --registry="${{ secrets.GHCR_REGISTRY }}" \
+            --username="${{ github.actor }}" \
+            --password="${{ secrets.GITHUB_TOKEN }}" \
+            --path "${{ github.repository }}" \
+            --image "${{ github.event.repository.name }}" \
+            --tag "${{ env.IMAGE_TAG }}" \
+            --src .
