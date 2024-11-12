@@ -65,6 +65,7 @@ jobs:
         uses: dagger/dagger-for-github@v7
         with:
           module: .
-          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:GH_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
+          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CR_TOKEN: ${{ secrets.CR_PAT }}
+          SHUTUP: 1
