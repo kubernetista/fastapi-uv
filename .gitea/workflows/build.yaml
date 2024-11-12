@@ -148,9 +148,11 @@ jobs:
 
       - name: Test Push alpine:latest 🉑
         run: |
+          NOW=$(date +'%Y%m%d-%H%M%S')
+          ##EPOCH=$(date +%s | awk '{print substr($0,length($0)-6)}')
           docker pull alpine:latest
-          docker tag alpine:latest ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:latest
-          docker push ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:latest
+          docker tag alpine:latest ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:r${NOW}
+          docker push ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:r${NOW}
 
       - name: Build and push with docker CLI
         timeout-minutes: 1
