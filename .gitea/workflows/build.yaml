@@ -148,7 +148,7 @@ jobs:
 
       - name: Test Push alpine:latest 🉑
         run: |
-          NOW=$(date +'%Y%m%d-%H%M%S%z')
+          NOW=$(date +'%Y%m%d-%H%M%S%Z')
           ##EPOCH=$(date +%s | awk '{print substr($0,length($0)-6)}')
           docker pull alpine:latest
           docker tag alpine:latest ${{ env.REGISTRY_GITEA }}/${{ gitea.actor }}/alpine:r${NOW}
