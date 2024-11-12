@@ -1,4 +1,4 @@
-name: Build container and push to registry 🐳
+name: Build container and push to registry 🐳  (GitHub)
 
 on:
   push:
