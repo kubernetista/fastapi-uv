@@ -1,4 +1,8 @@
 # syntax=docker/dockerfile:1
+LABEL org.opencontainers.image.source=https://github.com/kubernetista/fastapi-uv
+LABEL org.opencontainers.image.description="FastAPI built with UV package manager"
+
+# Use the official Python image
 FROM python:3.12-slim
 
 # Install uv
