@@ -155,7 +155,7 @@ jobs:
           -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
           -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
           . \
-          --push --progress quiet
+          --push --progress plain
 
       - name: docker/build-push-action@v6
         uses: docker/build-push-action@v6
