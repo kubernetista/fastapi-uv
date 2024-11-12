@@ -39,10 +39,17 @@ jobs:
   build:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          clean: true
+          fetch-depth: 0
+
       - name: Set image tag
         id: vars
-        run: echo "IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')" >> $GITHUB_ENV
+        run: |
+          echo "IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')" >> $GITHUB_ENV
+          echo "IMAGE_TAG = ${IMAGE_TAG}"
 
       - name: Build and push the container image
         uses: dagger/dagger-for-github@v7
