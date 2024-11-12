@@ -21,6 +21,9 @@ test:
     - uv python install 3.12
   script:
     # Run tests using uv
+    - uv run mypy ./src
+    - uv run deptry ./src
+    - uv run --with pyright pyright ./src
     - uv run pytest --cov --cov-config=pyproject.toml --cov-report=xml
   artifacts:
     when: always
