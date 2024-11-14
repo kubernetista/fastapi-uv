@@ -42,7 +42,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: Push test image
+      - name: Pull test image (docker)
+        run: docker pull alpine:latest
+
+      - name: Tag image for local registry and push (docker)
+        run: |
+          docker tag alpine:latest ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/alpine:latest
+          docker push ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/alpine:latest
+
+      - name: Build and Push test image
         uses: docker/build-push-action@v6
         with:
           context: .
