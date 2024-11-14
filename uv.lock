@@ -305,10 +305,6 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
-ci = [
-    { name = "mypy" },
-    { name = "pyright" },
-]
 dev = [
     { name = "deptry" },
     { name = "mkdocs" },
@@ -332,10 +328,6 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
-ci = [
-    { name = "mypy" },
-    { name = "pyright" },
-]
 dev = [
     { name = "deptry", specifier = ">=0.20.0" },
     { name = "mkdocs", specifier = ">=1.4.2" },
