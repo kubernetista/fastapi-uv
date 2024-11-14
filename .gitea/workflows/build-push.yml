@@ -69,26 +69,19 @@ jobs:
           echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
 
-      # - name: Build and push the container image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: |
-      #       ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-      #       ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
+      - name: Build and push the container image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Build and push the container image (docker)
-        timeout-minutes: 1
-        run: |
-          docker build --progress=plain --push \
-            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
-            .
-
-# -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME
-# }}:latest \ -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{
-# env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \ .
-
-# #. \
-# # --push --progress plain
+      # - name: Build and push the container image (docker)
+      #   timeout-minutes: 1
+      #   run: |
+      #     docker build --progress=plain --push \
+      #       -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+      #       -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
+      #       .
