@@ -83,9 +83,12 @@ jobs:
         run: |
           docker buildx build \
           -t ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-          -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
-          -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
           .
-          #. \
-          # --push --progress plain
           docker push ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+# -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME
+# }}:latest \ -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{
+# env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \ .
+
+# #. \
+# # --push --progress plain
