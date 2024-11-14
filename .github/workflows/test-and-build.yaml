@@ -1,4 +1,4 @@
-name: CI - GitHub Actions
+name: CI (GHA)
 
 # on: {}
 on:
@@ -12,8 +12,8 @@ on:
 jobs:
   test:
     name: Run Tests
-    # runs-on: ubuntu-latest
-    runs-on: macos
+    runs-on: ubuntu-latest
+    # runs-on: macos
 
     steps:
       - name: Checkout code
@@ -50,9 +50,9 @@ jobs:
       #     path: coverage.xml
 
   build:
-    name: Build and Push Container
-    # runs-on: ubuntu-latest
-    runs-on: macos
+    name: Build and Push container
+    runs-on: ubuntu-latest
+    # runs-on: macos
     needs: test
 
     steps:

@@ -1,4 +1,4 @@
-name: CI - GitHub Actions
+name: CI (Gitea)
 
 # on: {}
 on:
@@ -50,7 +50,7 @@ jobs:
       #     path: coverage.xml
 
   build:
-    name: Build and Push Container
+    name: Build and Push container
     # runs-on: ubuntu-latest
     runs-on: macos
     needs: test

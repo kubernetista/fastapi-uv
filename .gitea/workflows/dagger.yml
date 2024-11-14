@@ -1,4 +1,4 @@
-name: Dagger CI - GitHub Actions
+name: Dagger CI (Gitea)
 
 on: {}
 # on:

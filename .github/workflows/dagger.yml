@@ -1,4 +1,4 @@
-name: Dagger CI - GitHub Actions
+name: Dagger CI (GHA)
 
 on: {}
 # on:
@@ -19,8 +19,8 @@ permissions:
 
 jobs:
   test:
-    # runs-on: "ubuntu-latest"
-    runs-on: macos
+    runs-on: ubuntu-latest
+    # runs-on: macos
     steps:
       - uses: actions/checkout@v4
 
@@ -38,8 +38,8 @@ jobs:
 
   build:
     needs: test
-    # runs-on: "ubuntu-latest"
-    runs-on: macos
+    runs-on: ubuntu-latest
+    # runs-on: macos
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
