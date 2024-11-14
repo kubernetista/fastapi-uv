@@ -14,7 +14,7 @@ jobs:
     name: Build and Push container
     # runs-on: ubuntu-latest
     runs-on: macos
-    # needs: test
+    needs: test
     env:
       REGISTRY_GITEA: git.localtest.me
 
