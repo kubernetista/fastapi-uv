@@ -27,8 +27,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: UV sync
-        run: uv sync --frozen --no-install-project
+      - name: uv dependencies sync
+        run: uv sync --frozen --no-install-project  --no-progress
 
       - name: Run mypy
         run: uv run mypy ./src
