@@ -11,7 +11,7 @@ on:
 
 jobs:
   test:
-    name: Run Tests
+    name: Run tests
     # runs-on: ubuntu-latest
     runs-on: macos
 
@@ -116,6 +116,7 @@ jobs:
           echo "IMAGE_TAG_SAFE=${IMAGE_TAG_SAFE}" >> ${GITHUB_ENV}
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
 
+      ## FIXME: The container running the GHA needs host networking to be able to access to push to Gitea
       # - name: Build and push the container image
       #   uses: docker/build-push-action@v6
       #   with:
@@ -125,15 +126,16 @@ jobs:
       #       ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
       #       ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Build and push the container image (docker)
-        timeout-minutes: 2
-        run: |
-          docker build --progress=plain --push \
-            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_SAFE }} \
-            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
-            .
+      ## NOTE: Currently, using only the short path (see step below)
+      # - name: Build and push the container image (docker)
+      #   timeout-minutes: 2
+      #   run: |
+      #     docker build --progress=plain --push \
+      #       -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_SAFE }} \
+      #       -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
+      #       .
 
-      - name: Build and push the container image (docker, short tag)
+      - name: Build and push the container image (docker, short path)
         timeout-minutes: 2
         run: |
           docker build --progress=plain --push \
