@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   test:
+    name: Run tests (Dagger)
     # runs-on: "ubuntu-latest"
     runs-on: macos
     steps:
@@ -37,7 +38,7 @@ jobs:
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
   build:
-    name: Build and Push container (dagger)
+    name: Build and Push container (Dagger)
     # runs-on: "ubuntu-latest"
     runs-on: macos
     needs: test
