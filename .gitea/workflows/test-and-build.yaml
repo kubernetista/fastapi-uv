@@ -31,7 +31,7 @@ jobs:
         run: uv sync --group dev --frozen --no-install-project  --no-progress
 
       - name: Run mypy
-        run: uv run mypy ./src
+        run: uv run --no-install-project mypy ./src
 
       - name: Run deptry
         run: uv --no-progress run deptry ./src
