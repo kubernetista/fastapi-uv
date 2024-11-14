@@ -81,10 +81,10 @@ jobs:
       - name: Build and push the container image (docker)
         timeout-minutes: 1
         run: |
-          docker buildx build -t \
-            ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-            .
-          docker push ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker build -t \
+            ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            . --push
+          ##docker push ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
 # -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME
 # }}:latest \ -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{
