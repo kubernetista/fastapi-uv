@@ -62,7 +62,7 @@ jobs:
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
-          IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')
+          IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//' | sed 's/-\([0-9]*\)$/_\1/')
           echo "IMAGE_TAG = ${IMAGE_TAG}"
 
           # Save to env vars for later steps
@@ -81,9 +81,9 @@ jobs:
       - name: Build and push the container image (docker)
         timeout-minutes: 1
         run: |
-          docker buildx build \
-          -t ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-          .
+          docker buildx build -t \
+            ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            .
           docker push ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
 # -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME
