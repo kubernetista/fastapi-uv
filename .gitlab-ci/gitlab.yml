@@ -35,7 +35,7 @@ test:
       - coverage.xml
 
 # Job to build the Docker image
-build:
+build-push:
   stage: build
   image: docker:latest
   services:
