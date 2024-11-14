@@ -81,6 +81,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: Push test image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./test.Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/alpine:latest
+
       - name: Set container image name and tag
         id: vars
         run: |
