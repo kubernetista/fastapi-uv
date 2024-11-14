@@ -27,7 +27,6 @@ Repository = "https://github.com/acola/fastapi-uv"
 Documentation = "https://acola.github.io/fastapi-uv/"
 
 [dependency-groups]
-ci = ["mypy", "pyright"]
 dev = [
     "pytest>=7.2.0",
     "pre-commit>=2.20.0",
