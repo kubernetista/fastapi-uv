@@ -37,7 +37,6 @@ class FastapiUv:
                 ])
                 .with_directory("/src", src, exclude=[".venv/", ".mypy_cache/", "dist/", ".tox/"])
                 .with_workdir("/src")
-                # .with_exec(["sh", "-c", "uv lock --locked"])
                 .with_exec(["sh", "-c", "uv lock --frozen"])
                 # .with_exec(["sh", "-c", "uv run pre-commit run --all-files"])
                 .with_exec(["sh", "-c", "uv run mypy ./src"])
