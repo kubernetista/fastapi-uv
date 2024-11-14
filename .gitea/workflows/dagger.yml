@@ -37,9 +37,11 @@ jobs:
         #   cloud-token: ${{ secrets.DAGGER_CLOUD_TOKEN }}
 
   build:
-    needs: test
+    name: Build and Push container (dagger)
     # runs-on: "ubuntu-latest"
     runs-on: macos
+    needs: test
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,8 +68,9 @@ jobs:
         id: build-push
         uses: dagger/dagger-for-github@v7
         env:
-          CR_TOKEN: ${{ secrets.CR_PAT }}
+          REGISTRY_GITEA: git.localtest.me
+          CR_TOKEN: ${{ secrets.REGISTRY_PASSWORD }}
           SHUTUP: 1
         with:
           #   module: .
-          call: build-push --registry="ghcr.io" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
+          call: build-push --registry="${{ env.REGISTRY_GITEA }}" --username="${{ github.actor }}" --password=env:CR_TOKEN --path="${{ github.repository_owner }}" --image="${{ github.event.repository.name }}" --tag="${{ env.IMAGE_TAG }}" --src="."
