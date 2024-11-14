@@ -102,5 +102,3 @@ jobs:
           tags: |
             ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
             ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
-            # ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.IMAGE_TAG }}
-            # ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest
