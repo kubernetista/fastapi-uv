@@ -244,7 +244,6 @@ dagger-build:
 
 # 🗡️ Build and push the container to the registry with Dagger
 dagger-build-push:
-    env_var("GITLAB_TOKEN")
     @echo "\n🗡️ Dagger build and push\n"
     dagger call build-push --registry={{JUST_REGISTRY}} --username={{JUST_REG_USERNAME}} --password={{JUST_REG_PASSWORD}} --path {{JUST_REG_PATH}} --image {{JUST_IMAGE_NAME}} --tag {{JUST_CONTAINER_TAG}} --src {{JUST_CONTAINER_SRC}}
 
