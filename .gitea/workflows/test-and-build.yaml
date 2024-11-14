@@ -85,7 +85,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: ./test.Dockerfile
+          file: ./test.dockerfile
           push: true
           tags: ${{ env.REGISTRY_GITEA }}/${{ github.actor }}/alpine:latest
 
