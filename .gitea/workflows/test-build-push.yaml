@@ -101,11 +101,19 @@ jobs:
           IMAGE_NAME=$(echo ${GITHUB_REPOSITORY} | sed "s/${GITHUB_REPOSITORY_OWNER}\///")
           echo "IMAGE_NAME: ${IMAGE_NAME}"
 
-          IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//' | sed 's/-\([0-9]*\)$/_\1/')
+          # This works for Gitea when the image is in the format:
+          #    git.localtest.me/aruba-demo/fastapi-uv:v0.3.7-9
+          IMAGE_TAG=$(git describe --tags --abbrev=8 --always | sed 's/-g[0-9a-f]*$//')
           echo "IMAGE_TAG = ${IMAGE_TAG}"
+
+          # This is a safer tag for Gitea when the image is in the format:
+          #    git.localtest.me/aruba-demo/fastapi-uv/fastapi-uv:v0.3.7-9 -> fastapi-uv:v0.3.7_9
+          IMAGE_TAG_SAFE=$(echo ${IMAGE_TAG} | sed 's/-\([0-9]*\)$/_\1/')
+          echo "IMAGE_TAG_SAFE = ${IMAGE_TAG_SAFE}"
 
           # Save to env vars for later steps
           echo "IMAGE_TAG=${IMAGE_TAG}" >> ${GITHUB_ENV}
+          echo "IMAGE_TAG_SAFE=${IMAGE_TAG_SAFE}" >> ${GITHUB_ENV}
           echo "IMAGE_NAME=${IMAGE_NAME}" >> ${GITHUB_ENV}
 
       # - name: Build and push the container image
@@ -118,9 +126,17 @@ jobs:
       #       ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Build and push the container image (docker)
-        timeout-minutes: 1
+        timeout-minutes: 2
         run: |
           docker build --progress=plain --push \
-            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG_SAFE }} \
             -t ${{ env.REGISTRY_GITEA }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:latest \
+            .
+
+      - name: Build and push the container image (docker, short tag)
+        timeout-minutes: 2
+        run: |
+          docker build --progress=plain --push \
+            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository_owner }}/${{ github.event.repository.name }}:${{ env.IMAGE_TAG }} \
+            -t ${{ env.REGISTRY_GITEA }}/${{ github.repository_owner }}/${{ github.event.repository.name }}:latest \
             .
