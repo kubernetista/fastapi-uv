@@ -27,20 +27,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: uv dependencies sync
+      - name: Install package dependencies with uv
         run: uv sync --frozen --no-install-project  --no-progress
 
       - name: Run mypy
-        run: uv run mypy ./src
+        run: uv --no-progress run mypy ./src
 
       - name: Run deptry
-        run: uv run deptry ./src
+        run: uv --no-progress run deptry ./src
 
       - name: Run pyright
-        run: uv run --with pyright pyright ./src
+        run: uv --no-progress run --with pyright pyright ./src
 
       - name: Run pytest
-        run: uv run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
+        run: uv --no-progress run python -m pytest --cov --cov-config=pyproject.toml --cov-report=xml
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
