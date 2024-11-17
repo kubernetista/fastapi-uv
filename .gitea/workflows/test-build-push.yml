@@ -13,7 +13,8 @@ jobs:
   test:
     name: Run tests
     # runs-on: ubuntu-latest
-    runs-on: macos
+    # runs-on: macos
+    runs-on: docker
 
     steps:
       - name: Checkout code
@@ -52,7 +53,8 @@ jobs:
   build:
     name: Build and Push container
     # runs-on: ubuntu-latest
-    runs-on: macos
+    # runs-on: macos
+    runs-on: docker
     needs: test
     env:
       REGISTRY_GITEA: git.localtest.me
